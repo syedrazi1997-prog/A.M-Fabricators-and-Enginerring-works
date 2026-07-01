@@ -25,7 +25,7 @@ export const products: Product[] = [
     description: 'Elegant wrought iron flower pot stand with anti-rust coating. Perfect for balconies and indoor gardens.',
     basePrice: 1200,
     category: 'Balcony',
-    image: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?q=80&w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1603436326446-74e2d65f3168?q=80&w=800&auto=format&fit=crop',
     unit: 'piece',
     measurements: [
       { label: '2-Tier (Standard)', width: 1.5, height: 2, priceMultiplier: 1 },
@@ -40,7 +40,7 @@ export const products: Product[] = [
     description: 'Heavy duty forged iron brackets for elegant rustic shelving and wall support.',
     basePrice: 450,
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?q=80&w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop',
     unit: 'pair',
     measurements: [
       { label: '6 inch × 6 inch', width: 0.5, height: 0.5, priceMultiplier: 1 },
@@ -55,7 +55,7 @@ export const products: Product[] = [
     description: 'Sturdy MS square bar safety grill for smaller ventilation windows and bathrooms.',
     basePrice: 2200,
     category: 'Grills',
-    image: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800&auto=format&fit=crop',
     unit: 'piece',
     measurements: [
       { label: '2ft × 2ft Standard', width: 2, height: 2, priceMultiplier: 1 },
