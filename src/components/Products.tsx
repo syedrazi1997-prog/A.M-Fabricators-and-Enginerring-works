@@ -9,6 +9,8 @@ interface ProductsProps {
 }
 
 export default function Products({ onAddToCart }: ProductsProps) {
+  const [selectedColor, setSelectedColor] = useState('Matte Black');
+  const [selectedDesign, setSelectedDesign] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMeasurements, setSelectedMeasurements] = useState<Record<string, number>>({});
   const [customDims, setCustomDims] = useState<Record<string, { w: string; h: string }>>({});
@@ -111,8 +113,7 @@ export default function Products({ onAddToCart }: ProductsProps) {
         {/* Product Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((product) => {
-      const [selectedColor, setSelectedColor] = useState('Matte Black');
-  const [selectedDesign, setSelectedDesign] = useState('');
+      
 
   const categoryKey = product.category.toLowerCase();
   const mappedKey = categoryKey.includes('gate') ? 'gates' : categoryKey.includes('grill') ? 'grills' : '';
