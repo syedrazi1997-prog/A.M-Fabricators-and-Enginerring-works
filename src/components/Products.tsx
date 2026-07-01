@@ -9,8 +9,10 @@ interface ProductsProps {
 }
 
 export default function Products({ onAddToCart }: ProductsProps) {
- const [selectedColors, setSelectedColors] = useState<Record<string, string>>({});
- const [selectedDesigns, setSelectedDesigns] = useState<Record<string, string>>({});
+  // Safe state mapping at the parent component layer
+  const [selectedColors, setSelectedColors] = useState<Record<string, string>>({});
+  const [selectedDesigns, setSelectedDesigns] = useState<Record<string, string>>({});
+  
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMeasurements, setSelectedMeasurements] = useState<Record<string, number>>({});
   const [customDims, setCustomDims] = useState<Record<string, { w: string; h: string }>>({});
@@ -18,7 +20,9 @@ export default function Products({ onAddToCart }: ProductsProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [added, setAdded] = useState<Record<string, boolean>>({});
 
-  const filtered = activeCategory === 'All' ? products : products.filter((p) => p.category === activeCategory);
+  const filtered = activeCategory === 'All' 
+    ? products 
+    : products.filter((p) => p.category === activeCategory);
 
   const getMeasurementIndex = (pid: string) => selectedMeasurements[pid] ?? 0;
   const getQuantity = (pid: string) => quantities[pid] ?? 1;
@@ -27,6 +31,7 @@ export default function Products({ onAddToCart }: ProductsProps) {
     const product = products.find((p) => p.id === pid)!;
     const idx = getMeasurementIndex(pid);
     const isCustom = idx === product.measurements.length;
+
     if (isCustom) {
       const w = parseFloat(customDims[pid]?.w || '0');
       const h = parseFloat(customDims[pid]?.h || '0');
@@ -42,6 +47,10 @@ export default function Products({ onAddToCart }: ProductsProps) {
     const isCustom = idx === product.measurements.length;
     const qty = getQuantity(pid);
     const unitPrice = getPrice(pid);
+    
+    // Grabbing the selected color and design specifications dynamically
+    const finalColor = selectedColors[pid] || 'Matte Black';
+    const finalDesign = selectedDesigns[pid] || 'Standard Base Design';
 
     let label: string;
     let w: number;
@@ -50,10 +59,10 @@ export default function Products({ onAddToCart }: ProductsProps) {
     if (isCustom) {
       w = parseFloat(customDims[pid]?.w || '0');
       h = parseFloat(customDims[pid]?.h || '0');
-      label = `Custom ${w}ft × ${h}ft`;
+      label = `Custom ${w}ft × ${h}ft (${finalDesign} - ${finalColor})`;
     } else {
       const m = product.measurements[idx];
-      label = m.label;
+      label = `${m.label} (${finalDesign} - ${finalColor})`;
       w = m.width;
       h = m.height;
     }
@@ -113,13 +122,12 @@ export default function Products({ onAddToCart }: ProductsProps) {
         {/* Product Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((product) => {
-      const selectedColor = selectedColors[product.id] || 'Matte Black';
-  const selectedDesign = selectedDesigns[product.id] || '';
-
-  const categoryKey = product.category.toLowerCase();
-  const mappedKey = categoryKey.includes('gate') ? 'gates' : categoryKey.includes('grill') ? 'grills' : '';
-  const availableDesigns = DESIGN_PATTERNS[mappedKey] || [];
-      
+            const selectedColor = selectedColors[product.id] || 'Matte Black';
+            const selectedDesign = selectedDesigns[product.id] || '';
+            const categoryKey = product.category.toLowerCase();
+            const mappedKey = categoryKey.includes('gate') ? 'gates' : categoryKey.includes('grill') ? 'grills' : '';
+            const availableDesigns = DESIGN_PATTERNS[mappedKey] || [];
+            
             const idx = getMeasurementIndex(product.id);
             const isCustom = idx === product.measurements.length;
             const price = getPrice(product.id);
@@ -156,8 +164,7 @@ export default function Products({ onAddToCart }: ProductsProps) {
                   {/* Measurement Select */}
                   <div className="mb-3">
                     <label className="flex items-center gap-1 text-xs font-semibold text-steel-700 mb-1.5">
-                      <Ruler size={12} className="text-amber-500" />
-                      Select Size
+                      <Ruler size={12} className="text-amber-500" /> Select Size
                     </label>
                     <select
                       value={idx}
@@ -243,43 +250,41 @@ export default function Products({ onAddToCart }: ProductsProps) {
                     </div>
                   </div>
 
-                  {/* 1. Design Choice Selector */}
-        {availableDesigns.length > 0 && (
-          <div className="mb-4">
-            <label className="block text-xs font-semibold text-steel-600 mb-1">Select Design Style</label>
-            <select 
-              className="w-full text-xs border border-steel-200 rounded-lg px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-             value={selectedDesign}
-             onChange={(e) => setSelectedDesigns(prev => ({ ...prev, [product.id]: e.target.value }))}
-            >
-              <option value="">Standard Base Design</option>
-              {availableDesigns.map((design) => (
-                <option key={design.id} value={design.name}>{design.name}</option>
-              ))}
-            </select>
-          </div>
-        )}
+                  {/* 1. Design Choice Selector Layout */}
+                  {availableDesigns.length > 0 && (
+                    <div className="mb-4">
+                      <label className="block text-xs font-semibold text-steel-600 mb-1">Select Design Style</label>
+                      <select 
+                        className="w-full text-xs border border-steel-200 rounded-lg px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                        value={selectedDesign}
+                        onChange={(e) => setSelectedDesigns(prev => ({ ...prev, [product.id]: e.target.value }))}
+                      >
+                        <option value="">Standard Base Design</option>
+                        {availableDesigns.map((design) => (
+                          <option key={design.id} value={design.name}>{design.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
-        {/* 2. Color Swatch Picker */}
-        <div className="mb-4">
-          <label className="block text-xs font-semibold text-steel-600 mb-1">Finish Color: <span className="text-amber-600">{selectedColor}</span></label>
-          <div className="flex gap-2 mt-1.5">
-            {COLOR_OPTIONS.map((color) => (
-              <button
-                key={color.name}
-                type="button"
-                title={color.name}
-                onClick={() => setSelectedColors(prev => ({ ...prev, [product.id]: color.name }))}
-                className={`w-6 h-6 rounded-full border-2 transition-all ${selectedColor === color.name ? 'border-amber-500 scale-110 ring-2 ring-amber-100' : 'border-gray-200'}`}
-                style={{ backgroundColor: color.hex }}
-              />
-            ))}
-          </div>
-        </div>
+                  {/* 2. Color Swatch Picker Layout */}
+                  <div className="mb-4">
+                    <label className="block text-xs font-semibold text-steel-600 mb-1">Finish Color: <span className="text-amber-600">{selectedColor}</span></label>
+                    <div className="flex gap-2 mt-1.5">
+                      {COLOR_OPTIONS.map((color) => (
+                        <button
+                          key={color.name}
+                          type="button"
+                          title={color.name}
+                          onClick={() => setSelectedColors(prev => ({ ...prev, [product.id]: color.name }))}
+                          className={`w-6 h-6 rounded-full border-2 transition-all ${selectedColor === color.name ? 'border-amber-500 scale-110 ring-2 ring-amber-100' : 'border-gray-200'}`}
+                          style={{ backgroundColor: color.hex }}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-        {/* /* Add to cart */ }
-        <button
-                  {/* Add to cart */}
+                  {/* Add to cart Action Button */}
                   <button
                     onClick={() => handleAdd(product.id)}
                     className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 mt-auto ${
@@ -297,15 +302,15 @@ export default function Products({ onAddToCart }: ProductsProps) {
                     onClick={() => setExpandedProduct(isExpanded ? null : product.id)}
                     className="mt-2 flex items-center justify-center gap-1 text-xs text-steel-400 hover:text-amber-500 transition-colors"
                   >
-                    {isExpanded ? 'Hide' : 'View'} Features
+                    {isExpanded ? 'Hide' : 'View'} Features{' '}
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                   </button>
 
                   {isExpanded && (
                     <ul className="mt-2 space-y-1 border-t border-gray-100 pt-2">
                       {product.features.map((f) => (
-                        <li key={f} className="flex items-start gap-1.5 text-xs text-steel-600">
-                          <span className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-1 flex-shrink-0" />
+                        <li key={f} className="text-xs text-steel-500 flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-amber-500" />
                           {f}
                         </li>
                       ))}
