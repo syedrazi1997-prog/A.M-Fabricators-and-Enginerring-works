@@ -20,6 +20,51 @@ export interface Product {
 
 export const products: Product[] = [
   {
+    id: 'small-flower-pot-stand',
+    name: 'Heavy Duty Multi-Tier Plant Stand',
+    description: 'Elegant wrought iron flower pot stand with anti-rust coating. Perfect for balconies and indoor gardens.',
+    basePrice: 1200,
+    category: 'Balcony',
+    image: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?q=80&w=600&auto=format&fit=crop',
+    unit: 'piece',
+    measurements: [
+      { label: '2-Tier (Standard)', width: 1.5, height: 2, priceMultiplier: 1 },
+      { label: '3-Tier (Large)', width: 2, height: 3, priceMultiplier: 1.5 }
+    ],
+    customMeasurement: false,
+    features: ['Wrought Iron build', 'Weather-resistant paint', 'Holds up to 50kg', 'Sleek traditional curves']
+  },
+  {
+    id: 'iron-wall-brackets',
+    name: 'Decorative Shelf Wall Brackets (Pair)',
+    description: 'Heavy duty forged iron brackets for elegant rustic shelving and wall support.',
+    basePrice: 450,
+    category: 'Accessories',
+    image: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?q=80&w=600&auto=format&fit=crop',
+    unit: 'pair',
+    measurements: [
+      { label: '6 inch × 6 inch', width: 0.5, height: 0.5, priceMultiplier: 1 },
+      { label: '8 inch × 8 inch', width: 0.66, height: 0.66, priceMultiplier: 1.3 }
+    ],
+    customMeasurement: false,
+    features: ['Hand-forged iron', 'Pre-drilled mounting holes', 'Matte black textured finish']
+  },
+  {
+    id: 'designer-window-safety-grill',
+    name: 'Compact Window Safety Grill',
+    description: 'Sturdy MS square bar safety grill for smaller ventilation windows and bathrooms.',
+    basePrice: 2200,
+    category: 'Grills',
+    image: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=600&auto=format&fit=crop',
+    unit: 'piece',
+    measurements: [
+      { label: '2ft × 2ft Standard', width: 2, height: 2, priceMultiplier: 1 },
+      { label: '3ft × 2ft Wide', width: 3, height: 2, priceMultiplier: 1.4 }
+    ],
+    customMeasurement: true,
+    features: ['12mm solid MS square bars', 'Anti-burglar spacing design', 'Primed for immediate painting']
+  },
+  {
     id: 'main-gate-1',
     name: 'Heavy Duty Main Gate',
     category: 'Gates',
@@ -155,4 +200,5 @@ export const products: Product[] = [
   },
 ];
 
-export const categories = ['All', 'Gates', 'Grills', 'Railings', 'Staircases', 'Doors', 'Sheds & Structures'];
+export const categories = ['All' , 'Gates' , 'Grills' , 'Railings' , 'Balcony' , 'Accessories' ] ;
+
