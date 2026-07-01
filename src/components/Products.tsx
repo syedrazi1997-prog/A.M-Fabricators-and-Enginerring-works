@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { COLOR_OPTIONS, DESIGN_PATTERNS } from '../data/designBook';
 import { ShoppingCart, Ruler, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { products, categories } from '../data/products';
 import type { CartItem } from '../types/cart';
@@ -110,6 +111,12 @@ export default function Products({ onAddToCart }: ProductsProps) {
         {/* Product Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((product) => {
+      const [selectedColor, setSelectedColor] = useState('Matte Black');
+  const [selectedDesign, setSelectedDesign] = useState('');
+
+  const categoryKey = product.category.toLowerCase();
+  const mappedKey = categoryKey.includes('gate') ? 'gates' : categoryKey.includes('grill') ? 'grills' : '';
+  const availableDesigns = DESIGN_PATTERNS[mappedKey] || [];
             const idx = getMeasurementIndex(product.id);
             const isCustom = idx === product.measurements.length;
             const price = getPrice(product.id);
@@ -233,6 +240,42 @@ export default function Products({ onAddToCart }: ProductsProps) {
                     </div>
                   </div>
 
+                  {/* 1. Design Choice Selector */}
+        {availableDesigns.length > 0 && (
+          <div className="mb-4">
+            <label className="block text-xs font-semibold text-steel-600 mb-1">Select Design Style</label>
+            <select 
+              className="w-full text-xs border border-steel-200 rounded-lg px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+              value={selectedDesign}
+              onChange={(e) => setSelectedDesign(e.target.value)}
+            >
+              <option value="">Standard Base Design</option>
+              {availableDesigns.map((design) => (
+                <option key={design.id} value={design.name}>{design.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* 2. Color Swatch Picker */}
+        <div className="mb-4">
+          <label className="block text-xs font-semibold text-steel-600 mb-1">Finish Color: <span className="text-amber-600">{selectedColor}</span></label>
+          <div className="flex gap-2 mt-1.5">
+            {COLOR_OPTIONS.map((color) => (
+              <button
+                key={color.name}
+                type="button"
+                title={color.name}
+                onClick={() => setSelectedColor(color.name)}
+                className={`w-6 h-6 rounded-full border-2 transition-all ${selectedColor === color.name ? 'border-amber-500 scale-110 ring-2 ring-amber-100' : 'border-gray-200'}`}
+                style={{ backgroundColor: color.hex }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* /* Add to cart */ }
+        <button
                   {/* Add to cart */}
                   <button
                     onClick={() => handleAdd(product.id)}
