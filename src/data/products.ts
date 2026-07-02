@@ -25,12 +25,7 @@ export const products: Product[] = [
     description: 'Elegant wrought iron flower pot stand with anti-rust coating. Perfect for balconies and indoor gardens.',
     basePrice: 1200,
     category: 'Balcony',
-    image: [
-      'https://ibb.co/75QqnT0',
-      'https://ibb.co/MJKSHQk',
-      'https://ibb.co/jZvFh94S',
-      'https://ibb.co/4ZykTLM7'
-    ],
+    image: ['https://images.unsplash.com/photo-1665287729223-b1ddc5b4c0ca?q=80&w=678&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'],
     unit: 'piece',
     measurements: [
       { label: '2-Tier (Standard)', width: 1.5, height: 2, priceMultiplier: 1 },
