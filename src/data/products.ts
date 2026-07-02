@@ -40,7 +40,7 @@ export const products: Product[] = [
     description: 'Heavy duty forged iron brackets for elegant rustic shelving and wall support.',
     basePrice: 450,
     category: 'Accessories',
-    image: ['https://unsplash.com/photos/a-kitchen-with-a-sink-and-a-mirror-jbMpEomEkh8'],
+    image: ['https://rukminim2.flixcart.com/image/480/640/k4bms280/rack-shelf/z/z/x/wooden-and-iron-floating-wall-shelf-with-3-shelves-brown-original-imafn759gkzemkwp.jpeg?q=90'],
     unit: 'pair',
     measurements: [
       { label: '6 inch × 6 inch', width: 0.5, height: 0.5, priceMultiplier: 1 },
@@ -55,7 +55,7 @@ export const products: Product[] = [
     description: 'Sturdy MS square bar safety grill for smaller ventilation windows and bathrooms.',
     basePrice: 2200,
     category: 'Grills',
-    image: ['https://www.istockphoto.com/photo/decorative-wrought-iron-window-grille-on-wooden-door-with-blue-glass-reflection-gm2281527248-693407477?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_top&utm_content=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2FCompact-Window-Safety-Grill-iron&utm_term=Compact+Window+Safety+Grill+iron%3A%3A%3A%3Ad1442631-def6-4a5c-8d33-2c36c9603080'],
+    image: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfS-0jThsNvXvP8tkIPgsr5AO8aJ9RiLSQKeNO59f3ig&s=10'],
     unit: 'piece',
     measurements: [{ label: '2ft × 2ft Standard', width: 2, height: 2, priceMultiplier: 1 }],
     customMeasurement: false,
