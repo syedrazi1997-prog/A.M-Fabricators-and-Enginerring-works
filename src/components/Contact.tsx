@@ -9,14 +9,18 @@ export default function Contact() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name.trim() || !form.message.trim()) {
-      setError('Name and message are required.');
-      return;
-    }
-    setError('');
-    setSubmitting(true);
+  e.preventDefault();
 
+  if (!form.name.trim() || !form.message.trim()) {
+    setError('Name and message are required.');
+    return;
+  }
+
+  setError('');
+  setSubmitting(true);
+
+  try {
+    // 1. SAVE TO SUPABASE DATABASE
     const { error: dbError } = await supabase.from('contact_messages').insert({
       name: form.name.trim(),
       email: form.email.trim() || null,
@@ -25,14 +29,36 @@ export default function Contact() {
       message: form.message.trim(),
     });
 
-    setSubmitting(false);
     if (dbError) {
-      setError('Failed to send message. Please call us directly at +91 73863 81729.');
-    } else {
-      setSubmitted(true);
-      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      throw new Error('Database insertion failed');
     }
-  };
+
+    // 2. SEND EMAIL VIA WEB3FORMS
+    await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: "e3ecd6c3-a41e-4228-8811-1d206a645dc2", // Paste your free Web3Forms key here
+        name: form.name.trim(),
+        email: form.email.trim() || "No Email Provided",
+        phone: form.phone.trim() || "No Phone Provided",
+        subject: form.subject.trim() || "New Website Inquiry",
+        message: form.message.trim(),
+      }),
+    });
+
+    setSubmitting(false);
+    setSubmitted(true);
+    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+
+  } catch (err) {
+    setSubmitting(false);
+    setError('Failed to send message completely. Please call us directly at +91 73863 81729.');
+  }
+};
 
   return (
     <section id="contact" className="py-20 bg-steel-900">
@@ -64,7 +90,7 @@ export default function Contact() {
               {
                 icon: MapPin,
                 title: 'Workshop Address',
-                lines: ['IDA Nacharam,', 'Hyderabad – 500076,', 'Telangana'],
+                lines: ['IDA Nacharam,',beside baba hotel 'Hyderabad – 500076,', 'Telangana'],
                 sub: 'Free site visit for orders in Hyderabad',
                 action: {
                   label: 'Get Directions',
@@ -76,7 +102,7 @@ export default function Contact() {
                 title: 'Email Us',
                 lines: ['amfabricators@gmail.com'],
                 sub: 'We reply within 24 hours',
-                action: { label: 'Send Email', href: 'mailto:amfabricators@gmail.com' },
+                action: { label: 'Send Email', href: 'mailto:amfabricators3@gmail.com' },
               },
               {
                 icon: Clock,
