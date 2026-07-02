@@ -12,7 +12,7 @@ export interface Product {
   basePrice: number;
   unit: string;
   description: string;
-  image: string;
+  image: string[]; // Changed from string to string[] to support multiple images
   features: string[];
   measurements: MeasurementOption[];
   customMeasurement: boolean;
@@ -25,14 +25,24 @@ export const products: Product[] = [
     description: 'Elegant wrought iron flower pot stand with anti-rust coating. Perfect for balconies and indoor gardens.',
     basePrice: 1200,
     category: 'Balcony',
-    image: '"C:\Users\asmeh\OneDrive\Desktop\Plant stand 3.jpg"',
+    image: [
+      'https://ibb.co/75QqnT0',
+      'https://ibb.co/MJKSHQk',
+      'https://ibb.co/jZvFh94S',
+      'https://ibb.co/4ZykTLM7'
+    ],
     unit: 'piece',
     measurements: [
       { label: '2-Tier (Standard)', width: 1.5, height: 2, priceMultiplier: 1 },
       { label: '3-Tier (Large)', width: 2, height: 3, priceMultiplier: 1.5 }
     ],
     customMeasurement: false,
-    features: ['Wrought Iron build', 'Weather-resistant paint', 'Holds up to 50kg', 'Sleek traditional curves']
+    features: [
+      'Wrought Iron build',
+      'Weather-resistant paint',
+      'Holds up to 50kg',
+      'Sleek traditional curves'
+    ]
   },
   {
     id: 'iron-wall-brackets',
@@ -40,14 +50,20 @@ export const products: Product[] = [
     description: 'Heavy duty forged iron brackets for elegant rustic shelving and wall support.',
     basePrice: 450,
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop',
+    image: [
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop'
+    ],
     unit: 'pair',
     measurements: [
       { label: '6 inch × 6 inch', width: 0.5, height: 0.5, priceMultiplier: 1 },
       { label: '8 inch × 8 inch', width: 0.66, height: 0.66, priceMultiplier: 1.3 }
     ],
     customMeasurement: false,
-    features: ['Hand-forged iron', 'Pre-drilled mounting holes', 'Matte black textured finish']
+    features: [
+      'Hand-forged iron',
+      'Pre-drilled mounting holes',
+      'Matte black textured finish'
+    ]
   },
   {
     id: 'designer-window-safety-grill',
@@ -55,16 +71,21 @@ export const products: Product[] = [
     description: 'Sturdy MS square bar safety grill for smaller ventilation windows and bathrooms.',
     basePrice: 2200,
     category: 'Grills',
-    image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800&auto=format&fit=crop',
+    image: [
+      'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800&auto=format&fit=crop'
+    ],
     unit: 'piece',
     measurements: [
-      { label: '2ft × 2ft Standard', width: 2, height: 2, priceMultiplier: 1 },
-      { label: '3ft × 2ft Wide', width: 3, height: 2, priceMultiplier: 1.4 }
+      { label: '2ft × 2ft Standard', width: 2, height: 2, priceMultiplier: 1 }
     ],
-    customMeasurement: true,
-    features: ['12mm solid MS square bars', 'Anti-burglar spacing design', 'Primed for immediate painting']
-  },
-  {
+    customMeasurement: false,
+    features: [
+      'Premium MS Square Bar fabrication',
+      'Anti-corrosive primer base',
+      'Modern parallel bar design'
+    ]
+  }
+];
     id: 'main-gate-1',
     name: 'Heavy Duty Main Gate',
     category: 'Gates',
