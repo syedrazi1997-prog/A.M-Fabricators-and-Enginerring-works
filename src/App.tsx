@@ -20,35 +20,42 @@ export default function App() {
     const observers = sections.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
+
       const obs = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
         },
-        { threshold: 0.4 }
+        { threshold: 0.3 }
       );
       obs.observe(el);
-      return obs;
+      return { el, obs };
     });
-    return () => observers.forEach((o) => o?.disconnect());
+
+    return () => {
+      observers.forEach((item) => {
+        if (item) item.obs.unobserve(item.el);
+      });
+    };
   }, []);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prev) => {
-      const idx = prev.findIndex(
-        (i) => i.productId === item.productId && i.measurementLabel === item.measurementLabel
+      const existing = prev.find(
+        (i) =>
+          i.id === item.id &&
+          i.selectedSize === item.selectedSize &&
+          i.selectedColor === item.selectedColor &&
+          i.selectedStyle === item.selectedStyle
       );
-      if (idx >= 0) {
-        const updated = [...prev];
-        updated[idx] = {
-          ...updated[idx],
-          quantity: updated[idx].quantity + item.quantity,
-          totalPrice: (updated[idx].quantity + item.quantity) * updated[idx].unitPrice,
-        };
-        return updated;
+      if (existing) {
+        return prev.map((i) =>
+          i === existing ? { ...i, quantity: i.quantity + item.quantity } : i
+        );
       }
       return [...prev, item];
     });
-    setCartOpen(true);
   };
 
   const removeFromCart = (index: number) => {
@@ -56,14 +63,14 @@ export default function App() {
   };
 
   const updateQty = (index: number, qty: number) => {
-    setCartItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, quantity: qty, totalPrice: qty * item.unitPrice } : item
-      )
-    );
+    if (qty <= 0) {
+      removeFromCart(index);
+      return;
+    }
+    setCartItems((prev) => prev.map((item, i) => (i === index ? { ...item, quantity: qty } : item)));
   };
 
- return (
+  return (
     <div className="min-h-screen font-sans">
       <Header cartItems={cartItems} onCartOpen={() => setCartOpen(true)} activeSection={activeSection} />
       
@@ -82,19 +89,25 @@ export default function App() {
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
           onUpdateQty={updateQty}
-          onOrderSuccess={() => setCartItems([])}
+          onOrderSuccess={() => {
+            setCartItems([]);
+            setCartOpen(false);
+            setActiveSection('payment-success');
+          }}
         />
       )}
       
       <Chat />
 
-      {/* Place the HTML block for PaymentSuccess right here */}
+      {/* Conditionally rendering the new Payment Confirmation layout */}
       {activeSection === 'payment-success' && (
         <PaymentSuccess 
           confirmationId="TXN-A1B2C3D4" 
           customerEmail="user@example.com" 
           amountPaid={1200} 
+          orderId="AM-ORD-9921"
         />
       )}
     </div>
   );
+}
