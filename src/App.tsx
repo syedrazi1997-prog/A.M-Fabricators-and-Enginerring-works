@@ -15,6 +15,13 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
+  // Dynamic state hooks for saving finalized user details
+  const [buyerEmail, setBuyerEmail] = useState('');
+  const [buyerName, setBuyerName] = useState('');
+  const [buyerPhone, setBuyerPhone] = useState('');
+  const [paidAmount, setPaidAmount] = useState(0);
+  const [txnId, setTxnId] = useState('');
+
   useEffect(() => {
     const sections = ['home', 'products', 'about', 'contact'];
     const observers = sections.map((id) => {
@@ -89,9 +96,14 @@ export default function App() {
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
           onUpdateQty={updateQty}
-          onOrderSuccess={() => {
+          onOrderSuccess={(email: string, name: string, phone: string, amount: number) => {
             setCartItems([]);
             setCartOpen(false);
+            setBuyerEmail(email);
+            setBuyerName(name);
+            setBuyerPhone(phone);
+            setPaidAmount(amount);
+            setTxnId("TXN-" + Math.random().toString(36).substr(2, 9).toUpperCase());
             setActiveSection('payment-success');
           }}
         />
@@ -99,12 +111,13 @@ export default function App() {
       
       <Chat />
 
-      {/* Conditionally rendering the new Payment Confirmation layout */}
       {activeSection === 'payment-success' && (
         <PaymentSuccess 
-          confirmationId="TXN-A1B2C3D4" 
-          customerEmail="user@example.com" 
-          amountPaid={1200} 
+          confirmationId={txnId} 
+          customerEmail={buyerEmail} 
+          customerName={buyerName}
+          customerPhone={buyerPhone}
+          amountPaid={paidAmount} 
           orderId="AM-ORD-9921"
         />
       )}
