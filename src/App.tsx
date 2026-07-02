@@ -8,6 +8,7 @@ import Cart from './components/Cart';
 import Chat from './components/Chat';
 import Footer from './components/Footer';
 import type { CartItem } from './types/cart';
+import { PaymentSuccess } from './components/PaymentSuccess';
 
 export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -62,19 +63,19 @@ export default function App() {
     );
   };
 
-  return (
+ return (
     <div className="min-h-screen font-sans">
       <Header cartItems={cartItems} onCartOpen={() => setCartOpen(true)} activeSection={activeSection} />
-
+      
       <main>
         <Hero />
         <Products onAddToCart={addToCart} />
         <About />
         <Contact />
       </main>
-
+      
       <Footer />
-
+      
       {cartOpen && (
         <Cart
           items={cartItems}
@@ -84,8 +85,16 @@ export default function App() {
           onOrderSuccess={() => setCartItems([])}
         />
       )}
-
+      
       <Chat />
+
+      {/* Place the HTML block for PaymentSuccess right here */}
+      {activeSection === 'payment-success' && (
+        <PaymentSuccess 
+          confirmationId="TXN-A1B2C3D4" 
+          customerEmail="user@example.com" 
+          amountPaid={1200} 
+        />
+      )}
     </div>
   );
-}
