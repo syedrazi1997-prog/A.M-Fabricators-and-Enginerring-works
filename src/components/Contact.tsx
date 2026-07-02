@@ -9,56 +9,56 @@ export default function Contact() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!form.name.trim() || !form.message.trim()) {
-    setError('Name and message are required.');
-    return;
-  }
-
-  setError('');
-  setSubmitting(true);
-
-  try {
-    // 1. SAVE TO SUPABASE DATABASE
-    const { error: dbError } = await supabase.from('contact_messages').insert({
-      name: form.name.trim(),
-      email: form.email.trim() || null,
-      phone: form.phone.trim() || null,
-      subject: form.subject.trim() || null,
-      message: form.message.trim(),
-    });
-
-    if (dbError) {
-      throw new Error('Database insertion failed');
+    if (!form.name.trim() || !form.message.trim()) {
+      setError('Name and message are required.');
+      return;
     }
 
-    // 2. SEND EMAIL VIA WEB3FORMS
-    await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        access_key: "e3ecd6c3-a41e-4228-8811-1d206a645dc2", // Paste your free Web3Forms key here
+    setError('');
+    setSubmitting(true);
+
+    try {
+      // 1. SAVE TO SUPABASE DATABASE
+      const { error: dbError } = await supabase.from('contact_messages').insert({
         name: form.name.trim(),
-        email: form.email.trim() || "No Email Provided",
-        phone: form.phone.trim() || "No Phone Provided",
-        subject: form.subject.trim() || "New Website Inquiry",
+        email: form.email.trim() || null,
+        phone: form.phone.trim() || null,
+        subject: form.subject.trim() || null,
         message: form.message.trim(),
-      }),
-    });
+      });
 
-    setSubmitting(false);
-    setSubmitted(true);
-    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      if (dbError) {
+        throw new Error('Database insertion failed');
+      }
 
-  } catch (err) {
-    setSubmitting(false);
-    setError('Failed to send message completely. Please call us directly at +91 73863 81729.');
-  }
-};
+      // 2. SEND EMAIL VIA WEB3FORMS
+      await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "e3ecd6c3-a41e-4228-8811-1d206a645dc2",
+          name: form.name.trim(),
+          email: form.email.trim() || "No Email Provided",
+          phone: form.phone.trim() || "No Phone Provided",
+          subject: form.subject.trim() || "New Website Inquiry",
+          message: form.message.trim(),
+        }),
+      });
+
+      setSubmitting(false);
+      setSubmitted(true);
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+
+    } catch (err) {
+      setSubmitting(false);
+      setError('Failed to send message completely. Please call us directly at +91 73863 81729.');
+    }
+  };
 
   return (
     <section id="contact" className="py-20 bg-steel-900">
@@ -90,7 +90,7 @@ export default function Contact() {
               {
                 icon: MapPin,
                 title: 'Workshop Address',
-                lines: ['IDA Nacharam,',beside baba hotel 'Hyderabad – 500076,', 'Telangana'],
+                lines: ['IDA Nacharam,', 'beside baba hotel', 'Hyderabad – 500076,', 'Telangana'],
                 sub: 'Free site visit for orders in Hyderabad',
                 action: {
                   label: 'Get Directions',
@@ -100,7 +100,7 @@ export default function Contact() {
               {
                 icon: Mail,
                 title: 'Email Us',
-                lines: ['amfabricators@gmail.com'],
+                lines: ['amfabricators3@gmail.com'],
                 sub: 'We reply within 24 hours',
                 action: { label: 'Send Email', href: 'mailto:amfabricators3@gmail.com' },
               },
@@ -111,10 +111,7 @@ export default function Contact() {
                 sub: 'Emergency orders: call +91 73863 81729',
               },
             ].map((card) => (
-              <div
-                key={card.title}
-                className="bg-steel-800 border border-steel-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors"
-              >
+              <div key={card.title} className="bg-steel-800 border border-steel-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                     <card.icon size={18} className="text-amber-400" />
@@ -172,7 +169,6 @@ export default function Contact() {
             {/* Contact form */}
             <div className="bg-steel-800 border border-steel-700 rounded-2xl p-6">
               <h3 className="font-display text-xl font-bold text-white mb-5">Send Us a Message</h3>
-
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <CheckCircle size={48} className="text-green-400 mb-4" />
@@ -214,7 +210,6 @@ export default function Contact() {
                       />
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">Email</label>
                     <input
@@ -225,7 +220,6 @@ export default function Contact() {
                       className="w-full bg-steel-700 border border-steel-600 text-white placeholder-steel-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
                     />
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">Subject</label>
                     <input
@@ -236,7 +230,6 @@ export default function Contact() {
                       className="w-full bg-steel-700 border border-steel-600 text-white placeholder-steel-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
                     />
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">
                       Message <span className="text-red-400">*</span>
@@ -249,11 +242,7 @@ export default function Contact() {
                       className="w-full bg-steel-700 border border-steel-600 text-white placeholder-steel-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent resize-none"
                     />
                   </div>
-
-                  {error && (
-                    <p className="text-red-400 text-xs">{error}</p>
-                  )}
-
+                  {error && <p className="text-red-400 text-xs">{error}</p>}
                   <button
                     type="submit"
                     disabled={submitting}
@@ -261,13 +250,11 @@ export default function Contact() {
                   >
                     {submitting ? (
                       <>
-                        <Loader2 size={16} className="animate-spin" />
-                        Sending...
+                        <Loader2 size={16} className="animate-spin" /> Sending...
                       </>
                     ) : (
                       <>
-                        <Send size={16} />
-                        Send Message
+                        <Send size={16} /> Send Message
                       </>
                     )}
                   </button>
