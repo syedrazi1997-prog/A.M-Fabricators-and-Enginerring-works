@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, User, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-// Local layout structures to keep type safety decoupled from build errors
 interface CartItem {
-  id?: string;
   productId: string;
   productName: string;
   measurementLabel: string;
@@ -27,18 +25,15 @@ interface RazorpayOptions {
   name: string;
   description: string;
   handler: (response: { razorpay_payment_id: string; razorpay_order_id: string }) => void;
-  prefill?: { name?: string; email?: string; contact?: string };
-  notes?: Record<string, string>;
+  prefill?: { name?: string; contact?: string };
   theme?: { color?: string };
-  modal?: { ondismiss?: () => void };
 }
 
 interface CartProps {
-  items: CartItem[];
-  onClose: () => void;
-  onRemove: (index: number) => void;
-  onUpdateQty: (index: number, qty: number) => void;
-  onOrderSuccess: () => void;
+  cartItems: CartItem[];
+  onUpdateQuantity: (productId: string, newQuantity: number) => void;
+  onRemoveFromCart: (index: number) => void;
+  onNavigate?: (page: string) => void;
 }
 
 interface CustomerDetails {
@@ -48,11 +43,11 @@ interface CustomerDetails {
   notes: string;
 }
 
-export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuccess }: CartProps) {
+export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCart, onNavigate }: CartProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Isolated Customer Details form visibility states
+  // Manage Customer Details Modal State
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerDetails>({
     name: '',
@@ -62,7 +57,7 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
   });
   const [formErrors, setFormErrors] = useState<Partial<CustomerDetails>>({});
 
-  const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
+  const total = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -86,10 +81,6 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
     return Object.keys(errors).length === 0;
   };
 
-  const handleCheckoutClick = () => {
-    setShowCustomerForm(true);
-  };
-
   const handleProcessPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -99,7 +90,6 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
     setShowCustomerForm(false); 
 
     try {
-      // Dynamic Order Payload mapping
       const response = await fetch('https://api.razorpay.com/v1/orders', {
         method: 'POST',
         headers: {
@@ -113,7 +103,7 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
         }),
       });
 
-      if (!response.ok) throw new Error('Could not open channel to payment network gateway.');
+      if (!response.ok) throw new Error('Could not initialize payment gateway connection.');
       const order = await response.json();
 
       const options: RazorpayOptions = {
@@ -124,12 +114,10 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
         description: 'Structural Design Estimation Checkout',
         handler: async function (response) {
           try {
-            // Pack metadata explicitly into json strings inside structural fields 
-            // to bypass explicit database column schema limits on Render!
             const { error: dbError } = await supabase
               .from('orders')
               .insert([{
-                items: JSON.stringify(items),
+                items: JSON.stringify(cartItems),
                 total_amount: total,
                 payment_id: response.razorpay_payment_id,
                 status: 'paid',
@@ -137,9 +125,9 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
               }]);
 
             if (dbError) throw dbError;
-            onOrderSuccess();
+            if (onNavigate) onNavigate('home');
           } catch (err: any) {
-            setError(err.message || 'Transaction completed but failed database mapping synchronization.');
+            setError(err.message || 'Payment received but failed to save order status.');
           }
         },
         prefill: {
@@ -152,52 +140,49 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred processing initialization tokens.');
+      setError(err.message || 'An unexpected initialization error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 max-w-full flex pl-10 z-50">
-      <div className="w-screen max-w-md bg-white shadow-xl flex flex-col">
+    <div className="max-w-4xl mx-auto px-4 py-12 text-slate-900">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
         <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-amber-500" />
             <h2 className="text-lg font-bold">Your Estimation Cart</h2>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
-            <X className="w-6 h-6" />
-          </button>
         </div>
 
-        <div className="flex-grow overflow-y-auto p-6 space-y-4 text-slate-900">
+        <div className="p-6 space-y-4">
           {error && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-sm font-medium">
               {error}
             </div>
           )}
 
-          {items.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="text-center py-12 text-slate-500">
               <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p className="font-medium">Your specification cart is empty</p>
+              <p className="font-medium">Your design compilation is empty</p>
             </div>
           ) : (
-            items.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
+            cartItems.map((item, index) => (
+              <div key={index} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50 gap-4">
                 <div>
                   <h4 className="font-bold text-slate-900 text-sm">{item.productName}</h4>
                   <p className="text-xs text-slate-500 mt-0.5">Sizing Layout: {item.measurementLabel}</p>
                   <span className="text-sm font-black text-slate-800 block mt-1">₹{item.totalPrice.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
                   <div className="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden">
-                    <button onClick={() => onUpdateQty(index, item.quantity - 1)} className="px-2 py-1 text-slate-600 font-bold">-</button>
-                    <span className="px-2 text-xs font-bold text-slate-800">{item.quantity}</span>
-                    <button onClick={() => onUpdateQty(index, item.quantity + 1)} className="px-2 py-1 text-slate-600 font-bold">+</button>
+                    <button onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)} className="px-2 py-1 text-slate-600 font-bold">-</button>
+                    <span className="px-3 text-xs font-bold text-slate-800">{item.quantity}</span>
+                    <button onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)} className="px-2 py-1 text-slate-600 font-bold">+</button>
                   </div>
-                  <button onClick={() => onRemove(index)} className="text-slate-400 hover:text-rose-500">
+                  <button onClick={() => onRemoveFromCart(index)} className="text-slate-400 hover:text-rose-500 transition-colors">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -206,21 +191,21 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
           )}
         </div>
 
-        {items.length > 0 && (
+        {cartItems.length > 0 && (
           <div className="p-6 border-t border-slate-100 bg-slate-50">
             <div className="flex justify-between items-baseline mb-4">
               <span className="text-sm font-semibold text-slate-500">Subtotal Value:</span>
               <span className="text-2xl font-black text-slate-900">₹{total.toLocaleString('en-IN')}</span>
             </div>
             <button
-              onClick={handleCheckoutClick}
+              onClick={() => setShowCustomerForm(true)}
               disabled={loading}
               className="w-full bg-slate-900 hover:bg-amber-500 text-white font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Connecting Gateway Terminal...
+                  Processing Checkout Sequence...
                 </>
               ) : (
                 'Provide Details & Pay'
@@ -290,14 +275,14 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Special Structural Specifications / Notes (Optional)
+                  Special Specifications / Notes (Optional)
                 </label>
                 <textarea
                   name="notes"
                   rows={2}
                   value={customerInfo.notes}
                   onChange={handleInputChange}
-                  placeholder="Any particular iron gauge spacing layout preference..."
+                  placeholder="Any layout preferences..."
                   className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:outline-hidden"
                 />
               </div>
