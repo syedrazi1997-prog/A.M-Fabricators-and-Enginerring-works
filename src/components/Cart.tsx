@@ -54,7 +54,7 @@ export default function Cart({ onNavigate }: CartProps) {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // 1. Build structured WhatsApp breakdown with complete customer information
+    // Build structured WhatsApp breakdown with complete customer information
     let message = `*A.M FABRICATORS - NEW COMMERCIAL ESTIMATE ORDER*\n`;
     message += `=============================\n\n`;
     message += `*CUSTOMER DETAILS:*\n`;
@@ -68,11 +68,10 @@ export default function Cart({ onNavigate }: CartProps) {
     message += `*ESTIMATED FABRICATION ITEMS:*\n`;
 
     cartItems.forEach((item, index) => {
-      message += `*${index + 1}. ${item.name}*\n`;
-      message += `   • Size/Dimensions: ${item.dimensions}\n`;
-      message += `   • Finish/Color: ${item.color}\n`;
-      message += `   • Qty: ${item.quantity} ${item.unit || 'piece'}(s)\n`;
-      message += `   • Estimated Price: ₹${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
+      message += `*${index + 1}. ${item.productName}*\n`;
+      message += `   • Size/Dimensions: ${item.measurementLabel}\n`;
+      message += `   • Qty: ${item.quantity}\n`;
+      message += `   • Estimated Price: ₹${item.totalPrice.toLocaleString('en-IN')}\n\n`;
     });
 
     message += `=============================\n`;
@@ -81,7 +80,6 @@ export default function Cart({ onNavigate }: CartProps) {
 
     const encodedText = encodeURIComponent(message);
     
-    // Close modal, clear the cart context, and redirect to WhatsApp
     setShowCheckoutModal(false);
     window.open(`https://wa.me/919989939705?text=${encodedText}`, '_blank');
     clearCart();
@@ -119,26 +117,24 @@ export default function Cart({ onNavigate }: CartProps) {
         <div className="lg:col-span-2 space-y-4">
           {cartItems.map((item) => (
             <div
-              key={item.id}
+              key={item.productId}
               className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between"
             >
               <div className="flex gap-4 items-center">
                 <div className="w-20 h-20 rounded-xl bg-slate-50 border border-slate-100 p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
                   <img
                     src={item.image || fallbackImage}
-                    alt={item.name}
+                    alt={item.productName}
                     className="max-w-full max-h-full object-contain"
                     onError={(e) => { (e.target as HTMLImageElement).src = fallbackImage; }}
                   />
                 </div>
                 
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base leading-snug">{item.name}</h3>
-                  <p className="text-xs text-slate-400 font-semibold uppercase mt-0.5 tracking-wider">{item.category}</p>
+                  <h3 className="font-bold text-slate-900 text-base leading-snug">{item.productName}</h3>
                   
                   <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-xs text-slate-600">
-                    <span className="bg-slate-100 px-2 py-0.5 rounded-md font-medium">Sizing: <strong className="text-slate-800">{item.dimensions}</strong></span>
-                    <span className="bg-slate-100 px-2 py-0.5 rounded-md font-medium">Finish: <strong className="text-slate-800">{item.color}</strong></span>
+                    <span className="bg-slate-100 px-2 py-0.5 rounded-md font-medium">Sizing: <strong className="text-slate-800">{item.measurementLabel}</strong></span>
                   </div>
                 </div>
               </div>
@@ -146,14 +142,14 @@ export default function Cart({ onNavigate }: CartProps) {
               <div className="flex items-center justify-between w-full sm:w-auto gap-6 sm:border-l sm:border-slate-100 sm:pl-6 self-stretch sm:self-center">
                 <div className="flex items-center bg-slate-100 rounded-xl border border-slate-200">
                   <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                     className="px-3 py-1.5 text-slate-600 hover:text-slate-900 font-bold transition-colors"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="w-8 text-center text-sm font-bold text-slate-800">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                     className="px-3 py-1.5 text-slate-600 hover:text-slate-900 font-bold transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -163,12 +159,12 @@ export default function Cart({ onNavigate }: CartProps) {
                 <div className="text-right min-w-[90px]">
                   <span className="text-xs text-slate-400 block font-semibold">Estimated Total</span>
                   <span className="text-lg font-black text-slate-900">
-                    ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                    ₹{item.totalPrice.toLocaleString('en-IN')}
                   </span>
                 </div>
 
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item.productId)}
                   className="p-2 text-slate-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 transition-colors"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -230,7 +226,7 @@ export default function Cart({ onNavigate }: CartProps) {
       {/* CUSTOMER INFORMATION MODAL DIALOG */}
       {showCheckoutModal && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden animate-scaleIn border border-slate-100">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100">
             <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-bold">Contact & Site Details</h3>
