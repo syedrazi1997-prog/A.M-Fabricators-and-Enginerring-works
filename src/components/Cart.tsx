@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from '../hooks/useCart';
+import { useCart } from '../hooks/useCart'; // ◄--- FIXED IMPORT PATH
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, User, Phone, MapPin } from 'lucide-react';
 
 interface CartProps {
@@ -14,7 +14,7 @@ interface CustomerDetails {
 }
 
 export default function Cart({ onNavigate }: CartProps) {
-  const { cartItems, updateQuantity, removeFromCart, getCartTotal, clearCart } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
   
   // State to manage Customer Information Modal
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -82,7 +82,6 @@ export default function Cart({ onNavigate }: CartProps) {
     
     setShowCheckoutModal(false);
     window.open(`https://wa.me/919989939705?text=${encodedText}`, '_blank');
-    clearCart();
   };
 
   if (cartItems.length === 0) {
@@ -180,12 +179,6 @@ export default function Cart({ onNavigate }: CartProps) {
             >
               ← Add more structures
             </button>
-            <button
-              onClick={clearCart}
-              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-wider"
-            >
-              Clear Estimate
-            </button>
           </div>
         </div>
 
@@ -230,7 +223,7 @@ export default function Cart({ onNavigate }: CartProps) {
             <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-bold">Contact & Site Details</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Please fill out your deployment details before payment processing</p>
+                <p className="text-xs text-slate-400 mt-0.5">Please fill out your details before final layout evaluation</p>
               </div>
               <button 
                 onClick={() => setShowCheckoutModal(false)}
