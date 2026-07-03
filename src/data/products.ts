@@ -28,36 +28,26 @@ const standardColors: ColorOption[] = [
   { name: 'Matte Black', hex: '#1a1a1a' },
   { name: 'Antique Brown', hex: '#4a3c2a' },
   { name: 'Steel Grey', hex: '#5a6268' },
-  { name: 'White', hex: '#ffffff' },
-  { name: 'Forest Green', hex: '#2d4a3e' },
-  { name: 'Maroon', hex: '#6b1d1d' }
+  { name: 'White', hex: '#ffffff' }
 ];
 
 const gateColors: ColorOption[] = [
   { name: 'Matte Black', hex: '#1a1a1a' },
   { name: 'Antique Bronze', hex: '#665233' },
   { name: 'Steel Grey', hex: '#5a6268' },
-  { name: 'White', hex: '#ffffff' },
-  { name: 'Mahogany', hex: '#4a2511' },
-  { name: 'Golden Brass', hex: '#b39247' }
+  { name: 'Mahogany', hex: '#4a2511' }
 ];
 
 const shedColors: ColorOption[] = [
   { name: 'Galvanized Silver', hex: '#cccccc' },
   { name: 'Forest Green', hex: '#2d4a3e' },
-  { name: 'Brick Red', hex: '#a63a2b' },
-  { name: 'Sky Blue', hex: '#4682b4' },
-  { name: 'Charcoal', hex: '#333333' },
-  { name: 'Ivory White', hex: '#f5f5f0' }
+  { name: 'Charcoal', hex: '#333333' }
 ];
 
 const indoorColors: ColorOption[] = [
   { name: 'Matte Black', hex: '#1a1a1a' },
   { name: 'White', hex: '#ffffff' },
-  { name: 'Steel Grey', hex: '#5a6268' },
-  { name: 'Antique Brass', hex: '#b39247' },
-  { name: 'Walnut Brown', hex: '#5c4033' },
-  { name: 'Sage Green', hex: '#87a96b' }
+  { name: 'Antique Brass', hex: '#b39247' }
 ];
 
 export const products: Product[] = [
@@ -69,11 +59,11 @@ export const products: Product[] = [
     category: 'Balcony',
     unit: 'piece',
     images: [
-      'https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg',
-      'https://images.pexels.com/photos/793012/pexels-photo-793012.jpeg'
+      'https://images.pexels.com/photos/4505171/pexels-photo-4505171.jpeg',
+      'https://images.pexels.com/photos/4505169/pexels-photo-4505169.jpeg'
     ],
     customMeasurement: false,
-    features: ['Wrought Iron build', 'Weather-resistant paint', 'Holds up to 50kg', 'Sleek traditional curves'],
+    features: ['Wrought Iron build', 'Weather-resistant paint', 'Holds up to 50kg'],
     measurements: [
       { label: '2-Tier (Standard)', width: 1.5, height: 2, priceMultiplier: 1 },
       { label: '3-Tier (Large)', width: 2, height: 3, priceMultiplier: 1.5 }
@@ -88,8 +78,7 @@ export const products: Product[] = [
     category: 'Accessories',
     unit: 'pair',
     images: [
-      'https://images.pexels.com/photos/6707628/pexels-photo-6707628.jpeg',
-      'https://images.pexels.com/photos/2062426/pexels-photo-2062426.jpeg'
+      'https://images.pexels.com/photos/4622410/pexels-photo-4622410.jpeg'
     ],
     customMeasurement: false,
     features: ['Hand-forged iron', 'Pre-drilled mounting holes', 'Matte black textured finish'],
@@ -107,8 +96,7 @@ export const products: Product[] = [
     category: 'Grills',
     unit: 'piece',
     images: [
-      'https://images.pexels.com/photos/1109541/pexels-photo-1109541.jpeg',
-      'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg'
+      'https://images.pexels.com/photos/931062/pexels-photo-931062.jpeg'
     ],
     customMeasurement: true,
     features: ['12mm solid MS square bars', 'Anti-burglar spacing design', 'Primed for immediate painting'],
@@ -124,17 +112,15 @@ export const products: Product[] = [
     category: 'Gates',
     basePrice: 18500,
     unit: 'piece',
-    description: 'Heavy-duty MS iron main gate with decorative scroll work. Perfect for residential and commercial entrances. Powder-coated finish for long-lasting durability.',
+    description: 'Heavy-duty MS iron main gate with decorative scroll work. Perfect for residential and commercial entrances.',
     images: [
-      'https://images.pexels.com/photos/13317073/pexels-photo-13317073.jpeg',
-      'https://images.pexels.com/photos/15174548/pexels-photo-15174548.jpeg'
+      'https://images.pexels.com/photos/10346231/pexels-photo-10346231.jpeg',
+      'https://images.pexels.com/photos/14981143/pexels-photo-14981143.jpeg'
     ],
-    features: ['Premium MS Iron construction', 'Anti-rust primer coating', 'Heavy duty hinges included', 'Customizable design options'],
+    features: ['Premium MS Iron construction', 'Anti-rust primer coating', 'Heavy duty hinges included'],
     measurements: [
       { label: '8ft × 4ft (Standard)', width: 8, height: 4, priceMultiplier: 1.0 },
-      { label: '10ft × 5ft (Large)', width: 10, height: 5, priceMultiplier: 1.4 },
-      { label: '12ft × 6ft (Extra Large)', width: 12, height: 6, priceMultiplier: 1.9 },
-      { label: '14ft × 6ft (Heavy)', width: 14, height: 6, priceMultiplier: 2.3 }
+      { label: '10ft × 5ft (Large)', width: 10, height: 5, priceMultiplier: 1.4 }
     ],
     customMeasurement: true,
     colorOptions: gateColors
@@ -145,15 +131,14 @@ export const products: Product[] = [
     category: 'Gates',
     basePrice: 32000,
     unit: 'piece',
-    description: 'Premium motorized sliding gate with automation system. Ideal for wide entrances, commercial properties and industrial use. Smooth operation with remote control.',
+    description: 'Premium motorized sliding gate with automation system. Smooth operation with remote control.',
     images: [
-      'https://images.pexels.com/photos/15174541/pexels-photo-15174541.jpeg'
+      'https://images.pexels.com/photos/11883505/pexels-photo-11883505.jpeg'
     ],
-    features: ['Italian automation motor', '2 Remote controls included', 'Safety obstacle sensors', 'Heavy duty track & rollers'],
+    features: ['Italian automation motor', '2 Remote controls included', 'Heavy duty track & rollers'],
     measurements: [
       { label: '12ft × 5ft', width: 12, height: 5, priceMultiplier: 1.0 },
-      { label: '16ft × 5ft', width: 16, height: 5, priceMultiplier: 1.35 },
-      { label: '20ft × 6ft', width: 20, height: 6, priceMultiplier: 1.8 }
+      { label: '16ft × 5ft', width: 16, height: 5, priceMultiplier: 1.35 }
     ],
     customMeasurement: true,
     colorOptions: gateColors
@@ -164,16 +149,14 @@ export const products: Product[] = [
     category: 'Gates',
     basePrice: 9500,
     unit: 'piece',
-    description: 'Stylish compound wall side gate with vertical bar design. Perfect for pedestrian entry alongside main gate. Lightweight yet strong construction.',
+    description: 'Stylish compound wall side gate with vertical bar design. Perfect for pedestrian entry.',
     images: [
-      'https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg'
+      'https://images.pexels.com/photos/14847761/pexels-photo-14847761.jpeg'
     ],
-    features: ['Sleek modern aesthetics', 'Lock box integration ready', 'Quick installation setup', 'Low maintenance structure'],
+    features: ['Sleek modern aesthetics', 'Lock box integration ready', 'Quick installation setup'],
     measurements: [
       { label: '4ft × 4ft', width: 4, height: 4, priceMultiplier: 1.0 },
-      { label: '5ft × 4ft', width: 5, height: 4, priceMultiplier: 1.2 },
-      { label: '5ft × 5ft', width: 5, height: 5, priceMultiplier: 1.4 },
-      { label: '6ft × 5ft', width: 6, height: 5, priceMultiplier: 1.6 }
+      { label: '5ft × 4ft', width: 5, height: 4, priceMultiplier: 1.2 }
     ],
     customMeasurement: true,
     colorOptions: gateColors
@@ -184,16 +167,14 @@ export const products: Product[] = [
     category: 'Grills',
     basePrice: 2800,
     unit: 'sq.ft',
-    description: 'Decorative yet strong window safety grills. Available in various patterns — square, flower, and diamond designs. Protects your home without blocking ventilation.',
+    description: 'Decorative yet strong window safety grills. Available in various iron layout patterns.',
     images: [
-      'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg'
+      'https://images.pexels.com/photos/12316434/pexels-photo-12316434.jpeg'
     ],
-    features: ['12mm solid MS bright bars', 'Perfect alignment & spacing', 'Anti-rust zinc chromate primer', 'Seamless Argon/MIG welding welds'],
+    features: ['12mm solid MS bright bars', 'Anti-rust zinc chromate primer', 'Seamless Argon/MIG welds'],
     measurements: [
       { label: '3ft × 3ft (Small)', width: 3, height: 3, priceMultiplier: 1.0 },
-      { label: '4ft × 3ft (Standard)', width: 4, height: 3, priceMultiplier: 1.33 },
-      { label: '5ft × 4ft (Large)', width: 5, height: 4, priceMultiplier: 2.22 },
-      { label: '6ft × 4ft (Extra Large)', width: 6, height: 4, priceMultiplier: 2.66 }
+      { label: '4ft × 3ft (Standard)', width: 4, height: 3, priceMultiplier: 1.33 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -204,16 +185,14 @@ export const products: Product[] = [
     category: 'Grills',
     basePrice: 650,
     unit: 'per running ft',
-    description: 'Strong MS iron boundary fencing for plots, farms, and industrial sites. Vertical pickets welded to horizontal rails, galvanized and powder-coated for outdoor durability.',
+    description: 'Strong MS iron boundary fencing for plots, residential perimeters, and secure locations.',
     images: [
-      'https://images.pexels.com/photos/1109541/pexels-photo-1109541.jpeg'
+      'https://images.pexels.com/photos/973506/pexels-photo-973506.jpeg'
     ],
-    features: ['Anti-climb spear tops available', 'Galvanized iron inside for anti-rust', 'Modular panels for fast assembly', 'Concrete anchoring foundation shoes'],
+    features: ['Anti-climb spear tops available', 'Galvanized iron core', 'Modular panels for fast assembly'],
     measurements: [
       { label: '10 Running ft (4ft tall)', width: 10, height: 4, priceMultiplier: 1.0 },
-      { label: '20 Running ft (4ft tall)', width: 20, height: 4, priceMultiplier: 2.0 },
-      { label: '50 Running ft (5ft tall)', width: 50, height: 5, priceMultiplier: 5.8 },
-      { label: '100 Running ft (6ft tall)', width: 100, height: 6, priceMultiplier: 12.5 }
+      { label: '20 Running ft (4ft tall)', width: 20, height: 4, priceMultiplier: 2.0 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -224,16 +203,14 @@ export const products: Product[] = [
     category: 'Railings',
     basePrice: 9500,
     unit: 'per running ft',
-    description: 'Elegant MS iron balcony railings combining safety with aesthetics. Suitable for residential balconies, terraces, and staircases. Multiple design options available.',
+    description: 'Elegant MS iron balcony railings combining modern safety structural codes with premium aesthetics.',
     images: [
-      'https://images.pexels.com/photos/323743/pexels-photo-323743.jpeg'
+      'https://images.pexels.com/photos/3639540/pexels-photo-3639540.jpeg'
     ],
-    features: ['Complies with safety height rules', 'Ergonomic smooth handrail profile', 'Tempered glass insert options', 'Weatherproof metallic paint finish'],
+    features: ['Complies with safety height rules', 'Ergonomic smooth handrail profile', 'Weatherproof metallic paint'],
     measurements: [
       { label: '10 Running ft', width: 10, height: 3.5, priceMultiplier: 1.0 },
-      { label: '20 Running ft', width: 20, height: 3.5, priceMultiplier: 2.0 },
-      { label: '30 Running ft', width: 30, height: 3.5, priceMultiplier: 3.0 },
-      { label: '50 Running ft', width: 50, height: 3.5, priceMultiplier: 5.0 }
+      { label: '20 Running ft', width: 20, height: 3.5, priceMultiplier: 2.0 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -244,16 +221,14 @@ export const products: Product[] = [
     category: 'Railings',
     basePrice: 8500,
     unit: 'per running ft',
-    description: 'MS iron staircase handrail with vertical balusters. Provides safe grip along stairs for residential and commercial buildings. Wall-mounted or post-supported options.',
+    description: 'MS iron staircase handrail with vertical balusters. Provides safe grip along internal stairs.',
     images: [
-      'https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg'
+      'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg'
     ],
-    features: ['Sturdy continuous internal structure', 'Flawless wall flange anchorage', 'Kid-safe narrow bar spacing', 'Premium smooth powder coating'],
+    features: ['Sturdy continuous internal structure', 'Flawless wall flange anchorage', 'Kid-safe narrow bar spacing'],
     measurements: [
       { label: '10 Running ft', width: 10, height: 3, priceMultiplier: 1.0 },
-      { label: '15 Running ft', width: 15, height: 3, priceMultiplier: 1.5 },
-      { label: '20 Running ft', width: 20, height: 3, priceMultiplier: 2.0 },
-      { label: '30 Running ft', width: 30, height: 3, priceMultiplier: 3.0 }
+      { label: '15 Running ft', width: 15, height: 3, priceMultiplier: 1.5 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -264,16 +239,14 @@ export const products: Product[] = [
     category: 'Staircases',
     basePrice: 45000,
     unit: 'flight',
-    description: 'Custom-fabricated MS iron staircase with matching railings. Designed for residential and commercial spaces. Strong, durable construction with anti-slip steps.',
+    description: 'Custom-fabricated structural MS iron stairwell systems featuring heavy-duty safety railings.',
     images: [
-      'https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg'
+      'https://images.pexels.com/photos/221502/pexels-photo-221502.jpeg'
     ],
-    features: ['Heavy channel structural main stringer', 'Chequered plate anti-slip step treads', 'Includes full supporting side rails', 'Perfect step riser height design'],
+    features: ['Heavy channel structural main stringer', 'Chequered plate anti-slip step treads'],
     measurements: [
       { label: '8 Steps (standard floor)', width: 3, height: 8, priceMultiplier: 1.0 },
-      { label: '10 Steps', width: 3, height: 10, priceMultiplier: 1.25 },
-      { label: '12 Steps', width: 3, height: 12, priceMultiplier: 1.5 },
-      { label: '14 Steps', width: 3, height: 14, priceMultiplier: 1.75 }
+      { label: '10 Steps', width: 3, height: 10, priceMultiplier: 1.25 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -284,16 +257,14 @@ export const products: Product[] = [
     category: 'Staircases',
     basePrice: 6500,
     unit: 'piece',
-    description: 'Fixed MS iron ladder for rooftop access, water tanks, and mezzanine floors. Wall-mounted with anti-slip rungs. Custom heights available.',
+    description: 'Fixed MS iron ladder for rooftop access, water tanks, and structural maintenance access.',
     images: [
-      'https://images.pexels.com/photos/4792480/pexels-photo-4792480.jpeg'
+      'https://images.pexels.com/photos/5414841/pexels-photo-5414841.jpeg'
     ],
-    features: ['Solid square bar safety steps', 'Heavy wall bracket extensions', 'Top safety hand-grab handles', 'Compact space-saving design'],
+    features: ['Solid square bar safety steps', 'Heavy wall bracket extensions', 'Top safety hand-grab handles'],
     measurements: [
       { label: '8ft (Single floor)', width: 1.5, height: 8, priceMultiplier: 1.0 },
-      { label: '10ft', width: 1.5, height: 10, priceMultiplier: 1.25 },
-      { label: '12ft (Double floor)', width: 1.5, height: 12, priceMultiplier: 1.5 },
-      { label: '15ft (Rooftop)', width: 1.5, height: 15, priceMultiplier: 1.85 }
+      { label: '10ft', width: 1.5, height: 10, priceMultiplier: 1.25 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
@@ -304,15 +275,14 @@ export const products: Product[] = [
     category: 'Doors',
     basePrice: 14500,
     unit: 'piece',
-    description: 'Heavy-duty MS iron security door for ultimate protection. Thick frame with reinforced locking mechanism. Suitable for main entrance, store rooms, and vaults.',
+    description: 'Heavy-duty MS iron security door for ultimate entrance protection. Reinforced locking mechanism.',
     images: [
-      'https://images.pexels.com/photos/15174548/pexels-photo-15174548.jpeg'
+      'https://images.pexels.com/photos/279648/pexels-photo-279648.jpeg'
     ],
-    features: ['Multi-point safety locking mechanism', 'Heavy duty bullet hinge barrels', 'Wire mesh mosquito net layer', 'Thick gauge frame structure'],
+    features: ['Multi-point safety locking mechanism', 'Heavy duty bullet hinge barrels', 'Wire mesh mosquito net layer'],
     measurements: [
       { label: '7ft × 3ft (Standard)', width: 3, height: 7, priceMultiplier: 1.0 },
-      { label: '7ft × 3.5ft (Wide)', width: 3.5, height: 7, priceMultiplier: 1.15 },
-      { label: '8ft × 4ft (Large)', width: 4, height: 8, priceMultiplier: 1.45 }
+      { label: '7ft × 3.5ft (Wide)', width: 3.5, height: 7, priceMultiplier: 1.15 }
     ],
     customMeasurement: true,
     colorOptions: gateColors
@@ -323,15 +293,14 @@ export const products: Product[] = [
     category: 'Doors',
     basePrice: 18500,
     unit: 'piece',
-    description: 'High-security MS rolling shutters for shops, garages, and industrial warehouses. Smooth pull-down operation with heavy springs.',
+    description: 'High-security MS rolling shutters for storefront commercial lockup facilities and industrial warehouses.',
     images: [
-      'https://images.pexels.com/photos/16143419/pexels-photo-16143419.jpeg'
+      'https://images.pexels.com/photos/102128/pexels-photo-102128.jpeg'
     ],
-    features: ['Galvanized anti-interlock slats', 'Heavy-duty torsion counter springs', 'Side safety guide channel locks', 'Central pull handle & lock box'],
+    features: ['Galvanized anti-interlock slats', 'Heavy-duty torsion counter springs', 'Central pull handle & lock box'],
     measurements: [
       { label: '8ft × 8ft (Standard)', width: 8, height: 8, priceMultiplier: 1.0 },
-      { label: '10ft × 10ft (Large)', width: 10, height: 10, priceMultiplier: 1.45 },
-      { label: '12ft × 12ft (Commercial)', width: 12, height: 12, priceMultiplier: 2.0 }
+      { label: '10ft × 10ft (Large)', width: 10, height: 10, priceMultiplier: 1.45 }
     ],
     customMeasurement: true,
     colorOptions: shedColors
@@ -342,15 +311,14 @@ export const products: Product[] = [
     category: 'Sheds & Structures',
     basePrice: 145000,
     unit: 'structure',
-    description: 'Pre-engineered MS industrial shed structures with Tata/JSW roofing sheets. Heavy-duty truss design for factories, warehouses, and commercial spaces.',
+    description: 'Pre-engineered industrial fabrication structural sheds built with premium heavy-duty steel truss frames.',
     images: [
       'https://images.pexels.com/photos/257636/pexels-photo-257636.jpeg'
     ],
-    features: ['Heavy I-beam column foundation pillars', 'Wind-resistant steel truss frame', 'Genuine Tata/JSW coated sheets', 'Rainwater gutter channels included'],
+    features: ['Heavy I-beam column foundation pillars', 'Wind-resistant steel truss frame', 'Genuine coated corrugated sheets'],
     measurements: [
       { label: '20ft × 40ft (Small)', width: 20, height: 40, priceMultiplier: 1.0 },
-      { label: '30ft × 60ft (Medium)', width: 30, height: 60, priceMultiplier: 2.15 },
-      { label: '40ft × 80ft (Large)', width: 40, height: 80, priceMultiplier: 3.8 }
+      { label: '30ft × 60ft (Medium)', width: 30, height: 60, priceMultiplier: 2.15 }
     ],
     customMeasurement: true,
     colorOptions: shedColors
@@ -361,11 +329,11 @@ export const products: Product[] = [
     category: 'Sheds & Structures',
     basePrice: 28000,
     unit: 'piece',
-    description: 'Premium cantilever or pillar supported car parking sheds. Features polycarbonate or tensile fabric roofs to protect vehicles from sun and rain.',
+    description: 'Premium cantilever or pillar supported structures featuring weather-shielding outdoor roofing.',
     images: [
-      'https://images.pexels.com/photos/16982937/pexels-photo-16982937.jpeg'
+      'https://images.pexels.com/photos/8134833/pexels-photo-8134833.jpeg'
     ],
-    features: ['UV-resistant polycarbonate roofing top', 'Sturdy curved pipe truss frame', 'Protects car gloss paint fading', 'Withstands heavy rain & winds'],
+    features: ['UV-resistant roofing shield top', 'Sturdy curved pipe truss frame', 'Protects car paint from fading'],
     measurements: [
       { label: 'Single Car (10ft × 15ft)', width: 10, height: 15, priceMultiplier: 1.0 },
       { label: 'Double Car (20ft × 15ft)', width: 20, height: 15, priceMultiplier: 1.95 }
@@ -379,15 +347,14 @@ export const products: Product[] = [
     category: 'Sheds & Structures',
     basePrice: 35000,
     unit: 'structure',
-    description: 'Heavy duty MS mezzanine flooring structures to create extra storage or office workspace inside factories, warehouses, and retail shops.',
+    description: 'Heavy duty MS mezzanine elevated flooring platforms designed to double storage and industrial production workspace.',
     images: [
       'https://images.pexels.com/photos/257636/pexels-photo-257636.jpeg'
     ],
-    features: ['Heavy ISMC structural channel pillars', 'Chequered plate grid flooring platforms', 'Designed for high load storage', 'Includes safe perimeter protection rails'],
+    features: ['Heavy ISMC structural channel pillars', 'Chequered plate grid flooring platforms', 'Designed for high load storage'],
     measurements: [
       { label: '10ft × 10ft Area', width: 10, height: 10, priceMultiplier: 1.0 },
-      { label: '15ft × 15ft Area', width: 15, height: 15, priceMultiplier: 2.15 },
-      { label: '20ft × 20ft Area', width: 20, height: 20, priceMultiplier: 3.8 }
+      { label: '15ft × 15ft Area', width: 15, height: 15, priceMultiplier: 2.15 }
     ],
     customMeasurement: true,
     colorOptions: standardColors
