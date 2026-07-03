@@ -1,18 +1,26 @@
-import { useState, useEffect } from 'react';
-import Header from './components/Header';
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Products from './components/Products';
 import About from './components/About';
 import Contact from './components/Contact';
 import Cart from './components/Cart';
-import Chat from './components/Chat';
 import Footer from './components/Footer';
-import type { CartItem } from './types/cart';
+
+interface CartItem {
+  productId: string;
+  productName: string;
+  measurementLabel: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  image?: string;
+}
 
 export default function App() {
+  const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const sections = ['home', 'products', 'about', 'contact'];
@@ -50,42 +58,71 @@ export default function App() {
     setCartOpen(true);
   };
 
-  const removeFromCart = (index: number) => {
-    setCartItems((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateQty = (index: number, qty: number) => {
+  const updateQuantity = (productId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+      return;
+    }
     setCartItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, quantity: qty, totalPrice: qty * item.unitPrice } : item
+      prev.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: newQuantity, totalPrice: newQuantity * item.unitPrice }
+          : item
       )
     );
   };
 
-  return (
-    <div className="min-h-screen font-sans">
-      <Header cartItems={cartItems} onCartOpen={() => setCartOpen(true)} activeSection={activeSection} />
+  const removeFromCart = (index: number) => {
+    setCartItems((prev) => prev.filter((_, i) => i !== index));
+  };
 
-      <main>
-        <Hero />
-        <Products onAddToCart={addToCart} />
-        <About />
-        <Contact />
+  const handleNavigate = (page: string) => {
+    if (page === 'cart') {
+      setCartOpen(true);
+      setActiveSection('cart');
+    } else {
+      setCartOpen(false);
+      setActiveSection(page);
+      const el = document.getElementById(page);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <Navbar
+        activeSection={cartOpen ? 'cart' : activeSection}
+        onNavigate={handleNavigate}
+        cartCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+      />
+
+      <main className="flex-grow">
+        {cartOpen ? (
+          <Cart
+            cartItems={cartItems}
+            onUpdateQuantity={updateQuantity}
+            onRemoveFromCart={removeFromCart}
+            onNavigate={handleNavigate}
+          />
+        ) : (
+          <>
+            <section id="home">
+              <Hero onNavigate={handleNavigate} />
+            </section>
+            <section id="products">
+              <Products onAddToCart={addToCart} />
+            </section>
+            <section id="about">
+              <About />
+            </section>
+            <section id="contact">
+              <Contact />
+            </section>
+          </>
+        )}
       </main>
 
-      <Footer />
-
-      {cartOpen && (
-        <Cart
-          items={cartItems}
-          onClose={() => setCartOpen(false)}
-          onRemove={removeFromCart}
-          onUpdateQty={updateQty}
-          onOrderSuccess={() => setCartItems([])}
-        />
-      )}
-
-      <Chat />
+      <Footer onNavigate={handleNavigate} />
     </div>
   );
 }
