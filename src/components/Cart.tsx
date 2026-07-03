@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { X, Trash2, ShoppingBag, Loader2, User, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-interface CartItem {
+// Self-contained type declaration to eliminate global import errors
+interface LocalCartItem {
   productId: string;
   productName: string;
   measurementLabel: string;
@@ -30,7 +31,7 @@ interface RazorpayOptions {
 }
 
 interface CartProps {
-  cartItems: CartItem[];
+  cartItems: LocalCartItem[];
   onUpdateQuantity: (productId: string, newQuantity: number) => void;
   onRemoveFromCart: (index: number) => void;
   onNavigate?: (page: string) => void;
@@ -47,7 +48,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Manage Customer Details Modal State
+  // Local Form UI state overrides
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerDetails>({
     name: '',
@@ -103,7 +104,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
         }),
       });
 
-      if (!response.ok) throw new Error('Could not initialize payment gateway connection.');
+      if (!response.ok) throw new Error('Could not establish secure payment handshake.');
       const order = await response.json();
 
       const options: RazorpayOptions = {
@@ -127,7 +128,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
             if (dbError) throw dbError;
             if (onNavigate) onNavigate('home');
           } catch (err: any) {
-            setError(err.message || 'Payment received but failed to save order status.');
+            setError(err.message || 'Payment updated but database save context failed.');
           }
         },
         prefill: {
@@ -140,7 +141,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err: any) {
-      setError(err.message || 'An unexpected initialization error occurred.');
+      setError(err.message || 'An unexpected runtime compilation error occurred.');
     } finally {
       setLoading(false);
     }
@@ -166,7 +167,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
           {cartItems.length === 0 ? (
             <div className="text-center py-12 text-slate-500">
               <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p className="font-medium">Your design compilation is empty</p>
+              <p className="font-medium">Your specification compilation is empty</p>
             </div>
           ) : (
             cartItems.map((item, index) => (
@@ -205,7 +206,7 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Processing Checkout Sequence...
+                  Processing Checkout Terminal...
                 </>
               ) : (
                 'Provide Details & Pay'
@@ -275,14 +276,14 @@ export default function Cart({ cartItems = [], onUpdateQuantity, onRemoveFromCar
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Special Specifications / Notes (Optional)
+                  Special Structural Specifications / Notes (Optional)
                 </label>
                 <textarea
                   name="notes"
                   rows={2}
                   value={customerInfo.notes}
                   onChange={handleInputChange}
-                  placeholder="Any layout preferences..."
+                  placeholder="Any particular iron gauge preferences..."
                   className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:outline-hidden"
                 />
               </div>
