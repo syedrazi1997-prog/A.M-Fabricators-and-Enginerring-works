@@ -24,8 +24,6 @@ export interface Product {
   colorOptions?: ColorOption[];
 }
 
-// Professional catalog-style product images from IndiaMART / Amazon / supplier sites
-
 const standardColors: ColorOption[] = [
   { name: 'Matte Black', hex: '#1a1a1a' },
   { name: 'Antique Brown', hex: '#4a3c2a' },
@@ -71,9 +69,9 @@ export const products: Product[] = [
     category: 'Balcony',
     unit: 'piece',
     images: [
-      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1603436326446-74e2d65f3168?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1592150621744-aca64f48394a?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1603436326446-74e2d65f3168?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=800&q=80'
     ],
     customMeasurement: false,
     features: ['Wrought Iron build', 'Weather-resistant paint', 'Holds up to 50kg', 'Sleek traditional curves'],
@@ -91,9 +89,9 @@ export const products: Product[] = [
     category: 'Accessories',
     unit: 'pair',
     images: [
-      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
     ],
     customMeasurement: false,
     features: ['Hand-forged iron', 'Pre-drilled mounting holes', 'Matte black textured finish'],
@@ -111,9 +109,9 @@ export const products: Product[] = [
     category: 'Grills',
     unit: 'piece',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80'
     ],
     customMeasurement: true,
     features: ['12mm solid MS square bars', 'Anti-burglar spacing design', 'Primed for immediate painting'],
@@ -131,8 +129,8 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Heavy-duty MS iron main gate with decorative scroll work. Perfect for residential and commercial entrances. Powder-coated finish for long-lasting durability.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Premium MS Iron construction', 'Anti-rust primer coating', 'Heavy duty hinges included', 'Customizable design options'],
     measurements: [
@@ -152,7 +150,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Premium motorized sliding gate with automation system. Ideal for wide entrances, commercial properties and industrial use. Smooth operation with remote control.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Italian automation motor', '2 Remote controls included', 'Safety obstacle sensors', 'Heavy duty track & rollers'],
     measurements: [
@@ -171,7 +169,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Stylish compound wall side gate with vertical bar design. Perfect for pedestrian entry alongside main gate. Lightweight yet strong construction.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Sleek modern aesthetics', 'Lock box integration ready', 'Quick installation setup', 'Low maintenance structure'],
     measurements: [
@@ -191,7 +189,7 @@ export const products: Product[] = [
     unit: 'sq.ft',
     description: 'Decorative yet strong window safety grills. Available in various patterns — square, flower, and diamond designs. Protects your home without blocking ventilation.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['12mm solid MS bright bars', 'Perfect alignment & spacing', 'Anti-rust zinc chromate primer', 'Seamless Argon/MIG welding welds'],
     measurements: [
@@ -211,7 +209,7 @@ export const products: Product[] = [
     unit: 'per running ft',
     description: 'Strong MS iron boundary fencing for plots, farms, and industrial sites. Vertical pickets welded to horizontal rails, galvanized and powder-coated for outdoor durability.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Anti-climb spear tops available', 'Galvanized iron inside for anti-rust', 'Modular panels for fast assembly', 'Concrete anchoring foundation shoes'],
     measurements: [
@@ -231,7 +229,7 @@ export const products: Product[] = [
     unit: 'per running ft',
     description: 'Elegant MS iron balcony railings combining safety with aesthetics. Suitable for residential balconies, terraces, and staircases. Multiple design options available.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Complies with safety height rules', 'Ergonomic smooth handrail profile', 'Tempered glass insert options', 'Weatherproof metallic paint finish'],
     measurements: [
@@ -251,7 +249,7 @@ export const products: Product[] = [
     unit: 'per running ft',
     description: 'MS iron staircase handrail with vertical balusters. Provides safe grip along stairs for residential and commercial buildings. Wall-mounted or post-supported options.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Sturdy continuous internal structure', 'Flawless wall flange anchorage', 'Kid-safe narrow bar spacing', 'Premium smooth powder coating'],
     measurements: [
@@ -271,7 +269,7 @@ export const products: Product[] = [
     unit: 'flight',
     description: 'Custom-fabricated MS iron staircase with matching railings. Designed for residential and commercial spaces. Strong, durable construction with anti-slip steps.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Heavy channel structural main stringer', 'Chequered plate anti-slip step treads', 'Includes full supporting side rails', 'Perfect step riser height design'],
     measurements: [
@@ -291,7 +289,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Fixed MS iron ladder for rooftop access, water tanks, and mezzanine floors. Wall-mounted with anti-slip rungs. Custom heights available.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Solid square bar safety steps', 'Heavy wall bracket extensions', 'Top safety hand-grab handles', 'Compact space-saving design'],
     measurements: [
@@ -311,7 +309,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Heavy-duty MS iron security door for ultimate protection. Thick frame with reinforced locking mechanism. Suitable for main entrance, store rooms, and vaults.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Multi-point safety locking mechanism', 'Heavy duty bullet hinge barrels', 'Wire mesh mosquito net layer', 'Thick gauge frame structure'],
     measurements: [
@@ -330,7 +328,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'High-security MS rolling shutters for shops, garages, and industrial warehouses. Smooth pull-down operation with heavy springs.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Galvanized anti-interlock slats', 'Heavy-duty torsion counter springs', 'Side safety guide channel locks', 'Central pull handle & lock box'],
     measurements: [
@@ -349,7 +347,7 @@ export const products: Product[] = [
     unit: 'structure',
     description: 'Pre-engineered MS industrial shed structures with Tata/JSW roofing sheets. Heavy-duty truss design for factories, warehouses, and commercial spaces.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Heavy I-beam column foundation pillars', 'Wind-resistant steel truss frame', 'Genuine Tata/JSW coated sheets', 'Rainwater gutter channels included'],
     measurements: [
@@ -368,7 +366,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Premium cantilever or pillar supported car parking sheds. Features polycarbonate or tensile fabric roofs to protect vehicles from sun and rain.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['UV-resistant polycarbonate roofing top', 'Sturdy curved pipe truss frame', 'Protects car gloss paint fading', 'Withstands heavy rain & winds'],
     measurements: [
@@ -386,7 +384,7 @@ export const products: Product[] = [
     unit: 'structure',
     description: 'Heavy duty MS mezzanine flooring structures to create extra storage or office workspace inside factories, warehouses, and retail shops.',
     images: [
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Heavy ISMC structural channel pillars', 'Chequered plate grid flooring platforms', 'Designed for high load storage', 'Includes safe perimeter protection rails'],
     measurements: [
@@ -405,7 +403,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Multi-tier adjustable MS slotted angle storage racks. Multi-functional utility for godowns, shops, offices, and home storage setups.',
     images: [
-      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Heavy gauge slotted angles profiles', 'Adjustable shelf deck spacing layouts', 'High load capacity per level shelf', 'Scratch resistant industrial powder finish'],
     measurements: [
@@ -423,7 +421,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Elegant, compact MS mesh pattern shoe storage racks. Features open ventilation mesh wire decks with a premium rustproof outer lacquer layer.',
     images: [
-      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Breathable mesh shelf floor inserts', 'Compact space-saving layout footprint', 'Lightweight yet highly stable assembly', 'Smooth premium protective top coating'],
     measurements: [
@@ -441,7 +439,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Heavy duty freestanding clothes display hanging rails. Exceptional utility choice built explicitly for apparel retail boutiques and house closets.',
     images: [
-      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Thick heavy round piping structures', 'Side anti-slip hanger guard stops', 'Optional heavy rolling caster base wheels', 'Elegant sleek minimalist frame silhouettes'],
     measurements: [
@@ -459,7 +457,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Smart space-saving collapsible clothes drying clothes stands. Designed for indoor rooms, apartment corridors, and sunny balconies.',
     images: [
-      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Smart folding accordion structure joints', 'Rust-inhibitor double outer powder coat layers', 'Provides extensive linear drying feet lines', 'Sturdy plastic floor gripper pads base'],
     measurements: [
@@ -477,7 +475,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Heavy duty classic garden park benches built using cast iron side arm frames and solid MS back bars. Engineered to withstand elements outdoors.',
     images: [
-      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Ornamental vintage side arm castings', 'Ergonomically contoured body seat bars', 'Ground anchoring leg anchor tabs bolt holes', 'Weather resistant UV paint coating protection'],
     measurements: [
@@ -495,7 +493,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Rugged heavy duty MS structure workstation tables layout. Ideal for tool workshops, manufacturing packing tables, and garage benches.',
     images: [
-      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Thick steel plate top work surface panels', 'Reinforced lower base tool shelf deck trays', 'Heavy square tube pipe corner pillars', 'Pre-machined vice mounting installation points'],
     measurements: [
@@ -513,7 +511,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Mobile industrial storage utility hand carts. Perfect for mechanical garages, warehouse tool picking, or medical catering operations.',
     images: [
-      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Ergonomic thick pushing handle grips', 'Deep tray lips preventing item falloffs', 'Heavy duty swiveling locking brake wheels', 'Oil & impact resistant paint surface'],
     measurements: [
@@ -531,7 +529,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'High capacity heavy duty perforated metal waste bins. Perfect for municipalities, open parks, society gardens, and commercial complexes.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Breathable mesh perforated drum patterns', 'Swing rotating collection dump axes axes', 'Robust concrete mounting center support poles', 'Anti-vandalism theft prevention anchors locks'],
     measurements: [
@@ -549,7 +547,7 @@ export const products: Product[] = [
     unit: 'piece',
     description: 'Elegant protective entrance weather cover canopies. Built with solid poly-sheet roofs on artistic wrought iron wall support arms.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Artistic laser cut scroll bracket profiles', 'High impact shatterproof polycarbonate tops sheeting', 'Integrated front rainwater dispersal channels profiles', 'Heavy anchor masonry frame fasteners kit'],
     measurements: [
@@ -567,7 +565,7 @@ export const products: Product[] = [
     unit: 'sq.ft',
     description: 'Maximum security home burglar defense window safety bar frames. Features ultra-thick solid iron rods cross-anchored inside heavy frames.',
     images: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
     ],
     features: ['Solid 16mm thick carbon square rods bars', 'Tamperproof masonry wall masonry expansion bolts', 'Nigh unbreakable gas torch cut resistant profiles', 'Anti-corrosive multi-layer primer barrier skin'],
     measurements: [
