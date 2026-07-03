@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from '../hooks/useCart'; // ◄--- FIXED IMPORT PATH
+import { useCart } from '../hooks/useCart'; 
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, User, Phone, MapPin } from 'lucide-react';
 
 interface CartProps {
@@ -14,8 +14,12 @@ interface CustomerDetails {
 }
 
 export default function Cart({ onNavigate }: CartProps) {
-  const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
   
+  // Calculate the total locally to bypass missing hook function errors completely
+  const grandTotal = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+  const totalItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   // State to manage Customer Information Modal
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerDetails>({
@@ -75,7 +79,7 @@ export default function Cart({ onNavigate }: CartProps) {
     });
 
     message += `=============================\n`;
-    message += `*Grand Total Estimated Value:* ₹${getCartTotal().toLocaleString('en-IN')}\n\n`;
+    message += `*Grand Total Estimated Value:* ₹${grandTotal.toLocaleString('en-IN')}\n\n`;
     message += `Please verify this quote outline and initiate architectural layout planning verification.`;
 
     const encodedText = encodeURIComponent(message);
@@ -84,7 +88,7 @@ export default function Cart({ onNavigate }: CartProps) {
     window.open(`https://wa.me/919989939705?text=${encodedText}`, '_blank');
   };
 
-  if (cartItems.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
@@ -189,7 +193,7 @@ export default function Cart({ onNavigate }: CartProps) {
           <div className="space-y-3 pb-4 border-b border-slate-800 text-sm text-slate-400">
             <div className="flex justify-between">
               <span>Total Items Selected</span>
-              <span className="text-white font-semibold">{cartItems.reduce((acc, i) => acc + i.quantity, 0)} items</span>
+              <span className="text-white font-semibold">{totalItemsCount} items</span>
             </div>
             <div className="flex justify-between">
               <span>Site Consultation</span>
@@ -201,7 +205,7 @@ export default function Cart({ onNavigate }: CartProps) {
             <div className="flex justify-between items-baseline">
               <span className="text-sm text-slate-400">Grand Total Estimate</span>
               <span className="text-3xl font-black text-amber-400">
-                ₹{getCartTotal().toLocaleString('en-IN')}
+                ₹{grandTotal.toLocaleString('en-IN')}
               </span>
             </div>
           </div>
@@ -296,7 +300,7 @@ export default function Cart({ onNavigate }: CartProps) {
               <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
                 <div className="flex justify-between items-center mb-2 px-1">
                   <span className="text-sm font-bold text-slate-700">Amount Due:</span>
-                  <span className="text-xl font-black text-slate-900">₹{getCartTotal().toLocaleString('en-IN')}</span>
+                  <span className="text-xl font-black text-slate-900">₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
                 
                 <button
