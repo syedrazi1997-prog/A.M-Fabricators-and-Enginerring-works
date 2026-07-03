@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Header } from './components/Header';
 import Hero from './components/Hero';
 import Products from './components/Products';
-import Estimator from './components/Estimator';
+import Estimator from './components/estimator'; //  Fixed lowercase 'e' to match your actual filename
 import Cart from './components/Cart';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
