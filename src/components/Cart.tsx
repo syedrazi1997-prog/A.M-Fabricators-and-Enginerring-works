@@ -27,7 +27,7 @@ interface CartProps {
   onClose: () => void;
   onRemove: (index: number) => void;
   onUpdateQty: (index: number, qty: number) => void;
-  onOrderSuccess: (email: string, name: string, phone: string, amount: number) => void;
+  onOrderSuccess: () => void;
 }
 
 async function saveOrderToDb(
@@ -38,6 +38,7 @@ async function saveOrderToDb(
   paymentId: string,
   customerInfo: { name: string; email: string; phone: string }
 ) {
+  // INSERT as 'pending' — satisfies RLS INSERT policy (status must be 'pending')
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert({
@@ -73,19 +74,16 @@ async function saveOrderToDb(
   const { error: itemsError } = await supabase.from('order_items').insert(lineItems);
   if (itemsError) console.error('Failed to save order items:', itemsError);
 
+  // UPDATE to 'paid' with Razorpay payment ID — UPDATE policy allows pending → paid only
   const { error: updateError } = await supabase
     .from('orders')
     .update({ status: 'paid', razorpay_payment_id: paymentId })
     .eq('id', order.id);
-
   if (updateError) console.error('Failed to mark order as paid:', updateError);
 }
 
 export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuccess }: CartProps) {
   const [saving, setSaving] = useState(false);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
 
   const subtotal = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
   const gst = Math.round(subtotal * 0.18);
@@ -93,11 +91,6 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
 
   const handleCheckout = () => {
     if (items.length === 0) return;
-    
-    if (!name || !phone || !email) {
-      alert('Please fill out all customer details before proceeding to payment.');
-      return;
-    }
 
     const options: RazorpayOptions = {
       key: 'rzp_live_T8gb3CmRe1eNyx',
@@ -108,19 +101,18 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
       handler: async (response) => {
         setSaving(true);
         await saveOrderToDb(items, subtotal, gst, total, response.razorpay_payment_id, {
-          name,
-          email,
-          phone,
+          name: '',
+          email: '',
+          phone: '',
         });
         setSaving(false);
-        onOrderSuccess(email, name, phone, total);
+        onOrderSuccess();
+        alert(
+          `Payment successful!\nPayment ID: ${response.razorpay_payment_id}\n\nThank you for your order. Our team will contact you at +91 73863 81729 to confirm measurements and delivery.`
+        );
         onClose();
       },
-      prefill: {
-        name: name,
-        email: email,
-        contact: phone,
-      },
+      prefill: { name: '', email: '', contact: '' },
       notes: {
         order_items: items.map((i) => `${i.productName} (${i.measurementLabel}) x${i.quantity}`).join(', '),
         contact: '+91 73863 81729',
@@ -136,6 +128,7 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="flex-1 bg-black/50" onClick={onClose} />
+
       <div className="w-full max-w-md bg-white flex flex-col shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-steel-900 text-white">
@@ -162,10 +155,17 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
           ) : (
             items.map((item, idx) => (
               <div key={idx} className="flex gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
-                <img src={item.image} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
+                <img
+                  src={item.image}
+                  alt={item.productName}
+                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-bold text-steel-900 truncate">{item.productName}</h4>
                   <p className="text-xs text-steel-500 mb-1">{item.measurementLabel}</p>
+                  {item.selectedColor && (
+                    <p className="text-xs text-steel-400 mb-0.5">Color: {item.selectedColor}</p>
+                  )}
                   <p className="text-sm font-bold text-amber-600">₹{item.unitPrice.toLocaleString('en-IN')}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     <button
@@ -196,47 +196,9 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
           )}
         </div>
 
-        {/* Footer info & Form details */}
+        {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-gray-200 px-5 py-4 bg-gray-50 overflow-y-auto max-h-[60vh]">
-            {/* Customer Details Form Input Fields */}
-            <div className="space-y-3 mb-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <h3 className="text-sm font-bold text-steel-900 border-b border-gray-100 pb-1.5">Customer Details</h3>
-              <div>
-                <label className="block text-xs font-medium text-steel-600 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50/50"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-steel-600 mb-1">Phone Number</label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50/50"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-steel-600 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50/50"
-                />
-              </div>
-            </div>
-
+          <div className="border-t border-gray-200 px-5 py-4 bg-gray-50">
             <div className="space-y-1.5 mb-4">
               <div className="flex justify-between text-sm text-steel-600">
                 <span>Subtotal</span>
@@ -259,15 +221,17 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
             >
               {saving ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Saving order...
+                  <Loader2 size={16} className="animate-spin" />
+                  Saving order...
                 </>
               ) : (
                 <>Pay with Razorpay — ₹{total.toLocaleString('en-IN')}</>
               )}
             </button>
+
             <p className="text-xs text-center text-steel-400 mt-2.5 leading-snug">
               After payment, our team will contact you at{' '}
-              <span className="font-semibold">+91 73863 81729</span> to finalize measurements & schedule delivery.
+              <span className="font-semibold">+91 73863 81729</span> to finalize measurements &amp; schedule delivery.
             </p>
           </div>
         )}
