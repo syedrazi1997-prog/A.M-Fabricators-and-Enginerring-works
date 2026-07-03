@@ -1,241 +1,327 @@
-import { useState } from 'react';
-import { X, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
-import type { CartItem } from '../types/cart';
-import { supabase } from '../lib/supabase';
-
-declare global {
-  interface Window {
-    Razorpay: new (options: RazorpayOptions) => { open(): void };
-  }
-}
-
-interface RazorpayOptions {
-  key: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  handler: (response: { razorpay_payment_id: string; razorpay_order_id?: string }) => void;
-  prefill?: { name?: string; email?: string; contact?: string };
-  notes?: Record<string, string>;
-  theme?: { color?: string };
-  modal?: { ondismiss?: () => void };
-}
+import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, User, Phone, MapPin } from 'lucide-react';
 
 interface CartProps {
-  items: CartItem[];
-  onClose: () => void;
-  onRemove: (index: number) => void;
-  onUpdateQty: (index: number, qty: number) => void;
-  onOrderSuccess: () => void;
+  onNavigate?: (page: string) => void;
 }
 
-async function saveOrderToDb(
-  items: CartItem[],
-  subtotal: number,
-  gst: number,
-  total: number,
-  paymentId: string,
-  customerInfo: { name: string; email: string; phone: string }
-) {
-  // INSERT as 'pending' — satisfies RLS INSERT policy (status must be 'pending')
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({
-      customer_name: customerInfo.name || null,
-      customer_email: customerInfo.email || null,
-      customer_phone: customerInfo.phone || null,
-      subtotal,
-      gst_amount: gst,
-      total_amount: total,
-      status: 'pending',
-    })
-    .select('id')
-    .maybeSingle();
-
-  if (orderError || !order) {
-    console.error('Failed to save order:', orderError);
-    return;
-  }
-
-  const lineItems = items.map((item) => ({
-    order_id: order.id,
-    product_id: item.productId,
-    product_name: item.productName,
-    measurement_label: item.measurementLabel,
-    width_ft: item.width,
-    height_ft: item.height,
-    quantity: item.quantity,
-    unit_price: item.unitPrice,
-    total_price: item.unitPrice * item.quantity,
-    is_custom: item.isCustom,
-  }));
-
-  const { error: itemsError } = await supabase.from('order_items').insert(lineItems);
-  if (itemsError) console.error('Failed to save order items:', itemsError);
-
-  // UPDATE to 'paid' with Razorpay payment ID — UPDATE policy allows pending → paid only
-  const { error: updateError } = await supabase
-    .from('orders')
-    .update({ status: 'paid', razorpay_payment_id: paymentId })
-    .eq('id', order.id);
-  if (updateError) console.error('Failed to mark order as paid:', updateError);
+interface CustomerDetails {
+  name: string;
+  phone: string;
+  address: string;
+  notes: string;
 }
 
-export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuccess }: CartProps) {
-  const [saving, setSaving] = useState(false);
+export default function Cart({ onNavigate }: CartProps) {
+  const { cartItems, updateQuantity, removeFromCart, getCartTotal, clearCart } = useCart();
+  
+  // State to manage Customer Information Modal
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState<CustomerDetails>({
+    name: '',
+    phone: '',
+    address: '',
+    notes: '',
+  });
+  const [formErrors, setFormErrors] = useState<Partial<CustomerDetails>>({});
 
-  const subtotal = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-  const gst = Math.round(subtotal * 0.18);
-  const total = subtotal + gst;
+  const fallbackImage = "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=600&auto=format&fit=crop";
 
-  const handleCheckout = () => {
-    if (items.length === 0) return;
-
-    const options: RazorpayOptions = {
-      key: 'rzp_live_T8gb3CmRe1eNyx',
-      amount: total * 100,
-      currency: 'INR',
-      name: 'A.M Fabricators Engineering Works',
-      description: `Order for ${items.length} fabrication item(s)`,
-      handler: async (response) => {
-        setSaving(true);
-        await saveOrderToDb(items, subtotal, gst, total, response.razorpay_payment_id, {
-          name: '',
-          email: '',
-          phone: '',
-        });
-        setSaving(false);
-        onOrderSuccess();
-        alert(
-          `Payment successful!\nPayment ID: ${response.razorpay_payment_id}\n\nThank you for your order. Our team will contact you at +91 73863 81729 to confirm measurements and delivery.`
-        );
-        onClose();
-      },
-      prefill: { name: '', email: '', contact: '' },
-      notes: {
-        order_items: items.map((i) => `${i.productName} (${i.measurementLabel}) x${i.quantity}`).join(', '),
-        contact: '+91 73863 81729',
-        address: 'IDA Nacharam, Hyderabad',
-      },
-      theme: { color: '#f59e0b' },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCustomerInfo(prev => ({ ...prev, [name]: value }));
+    if (formErrors[name as keyof CustomerDetails]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/50" onClick={onClose} />
+  const validateForm = () => {
+    const errors: Partial<CustomerDetails> = {};
+    if (!customerInfo.name.trim()) errors.name = 'Full name is required';
+    if (!customerInfo.phone.trim()) {
+      errors.phone = 'Phone number is required';
+    } else if (!/^\d{10}$/.test(customerInfo.phone.trim().replace(/[^0-9]/g, ''))) {
+      errors.phone = 'Please enter a valid 10-digit mobile number';
+    }
+    if (!customerInfo.address.trim()) errors.address = 'Site address is required for fabrication evaluation';
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
-      <div className="w-full max-w-md bg-white flex flex-col shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 bg-steel-900 text-white">
-          <div className="flex items-center gap-2">
-            <ShoppingBag size={20} className="text-amber-400" />
-            <span className="font-display font-bold text-lg">Your Cart</span>
-            <span className="bg-amber-500 text-steel-900 text-xs font-bold px-2 py-0.5 rounded-full">
-              {items.length} item{items.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-          <button onClick={onClose} className="hover:text-amber-400 transition-colors">
-            <X size={22} />
-          </button>
+  const handleFinalCheckoutSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    // 1. Build structured WhatsApp breakdown with complete customer information
+    let message = `*A.M FABRICATORS - NEW COMMERCIAL ESTIMATE ORDER*\n`;
+    message += `=============================\n\n`;
+    message += `*CUSTOMER DETAILS:*\n`;
+    message += `👤 Name: ${customerInfo.name}\n`;
+    message += `📞 Phone: ${customerInfo.phone}\n`;
+    message += `📍 Site Address: ${customerInfo.address}\n`;
+    if (customerInfo.notes.trim()) {
+      message += `📝 Special Instructions: ${customerInfo.notes}\n`;
+    }
+    message += `\n=============================\n\n`;
+    message += `*ESTIMATED FABRICATION ITEMS:*\n`;
+
+    cartItems.forEach((item, index) => {
+      message += `*${index + 1}. ${item.name}*\n`;
+      message += `   • Size/Dimensions: ${item.dimensions}\n`;
+      message += `   • Finish/Color: ${item.color}\n`;
+      message += `   • Qty: ${item.quantity} ${item.unit || 'piece'}(s)\n`;
+      message += `   • Estimated Price: ₹${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
+    });
+
+    message += `=============================\n`;
+    message += `*Grand Total Estimated Value:* ₹${getCartTotal().toLocaleString('en-IN')}\n\n`;
+    message += `Please verify this quote outline and initiate architectural layout planning verification.`;
+
+    const encodedText = encodeURIComponent(message);
+    
+    // Close modal, clear the cart context, and redirect to WhatsApp
+    setShowCheckoutModal(false);
+    window.open(`https://wa.me/919989939705?text=${encodedText}`, '_blank');
+    clearCart();
+  };
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
+          <ShoppingBag className="w-10 h-10" />
         </div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Your Estimate Cart is Empty</h2>
+        <p className="text-slate-600 mb-8 max-w-sm mx-auto">
+          Explore our fabrication catalog to add custom gates, grills, railings, or structures to your pricing layout.
+        </p>
+        <button
+          onClick={() => onNavigate?.('products')}
+          className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20"
+        >
+          Browse Our Products
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
 
-        {/* Items */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-          {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 text-steel-400">
-              <ShoppingBag size={48} className="mb-3 opacity-30" />
-              <p className="text-sm">Your cart is empty</p>
-              <p className="text-xs mt-1">Add products to get a quote</p>
-            </div>
-          ) : (
-            items.map((item, idx) => (
-              <div key={idx} className="flex gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
-                <img
-                  src={item.image}
-                  alt={item.productName}
-                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-steel-900 truncate">{item.productName}</h4>
-                  <p className="text-xs text-steel-500 mb-1">{item.measurementLabel}</p>
-                  {item.selectedColor && (
-                    <p className="text-xs text-steel-400 mb-0.5">Color: {item.selectedColor}</p>
-                  )}
-                  <p className="text-sm font-bold text-amber-600">₹{item.unitPrice.toLocaleString('en-IN')}</p>
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    <button
-                      onClick={() => onUpdateQty(idx, Math.max(1, item.quantity - 1))}
-                      className="w-6 h-6 border border-steel-300 rounded text-steel-700 font-bold text-xs hover:bg-gray-100 flex items-center justify-center"
-                    >
-                      −
-                    </button>
-                    <span className="text-xs font-semibold w-5 text-center">{item.quantity}</span>
-                    <button
-                      onClick={() => onUpdateQty(idx, item.quantity + 1)}
-                      className="w-6 h-6 border border-steel-300 rounded text-steel-700 font-bold text-xs hover:bg-gray-100 flex items-center justify-center"
-                    >
-                      +
-                    </button>
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      <h2 className="text-3xl font-extrabold text-slate-900 mb-8 tracking-tight">
+        Your Estimate Review (<span className="text-amber-500">{cartItems.length}</span>)
+      </h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Cart Items List */}
+        <div className="lg:col-span-2 space-y-4">
+          {cartItems.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between"
+            >
+              <div className="flex gap-4 items-center">
+                <div className="w-20 h-20 rounded-xl bg-slate-50 border border-slate-100 p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <img
+                    src={item.image || fallbackImage}
+                    alt={item.name}
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).src = fallbackImage; }}
+                  />
+                </div>
+                
+                <div>
+                  <h3 className="font-bold text-slate-900 text-base leading-snug">{item.name}</h3>
+                  <p className="text-xs text-slate-400 font-semibold uppercase mt-0.5 tracking-wider">{item.category}</p>
+                  
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-xs text-slate-600">
+                    <span className="bg-slate-100 px-2 py-0.5 rounded-md font-medium">Sizing: <strong className="text-slate-800">{item.dimensions}</strong></span>
+                    <span className="bg-slate-100 px-2 py-0.5 rounded-md font-medium">Finish: <strong className="text-slate-800">{item.color}</strong></span>
                   </div>
                 </div>
-                <div className="flex flex-col items-end justify-between">
-                  <button onClick={() => onRemove(idx)} className="text-red-400 hover:text-red-600 transition-colors">
-                    <Trash2 size={15} />
+              </div>
+
+              <div className="flex items-center justify-between w-full sm:w-auto gap-6 sm:border-l sm:border-slate-100 sm:pl-6 self-stretch sm:self-center">
+                <div className="flex items-center bg-slate-100 rounded-xl border border-slate-200">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="px-3 py-1.5 text-slate-600 hover:text-slate-900 font-bold transition-colors"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="text-sm font-bold text-steel-900">
-                    ₹{(item.unitPrice * item.quantity).toLocaleString('en-IN')}
+                  <span className="w-8 text-center text-sm font-bold text-slate-800">{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="px-3 py-1.5 text-slate-600 hover:text-slate-900 font-bold transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="text-right min-w-[90px]">
+                  <span className="text-xs text-slate-400 block font-semibold">Estimated Total</span>
+                  <span className="text-lg font-black text-slate-900">
+                    ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                   </span>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
 
-        {/* Footer */}
-        {items.length > 0 && (
-          <div className="border-t border-gray-200 px-5 py-4 bg-gray-50">
-            <div className="space-y-1.5 mb-4">
-              <div className="flex justify-between text-sm text-steel-600">
-                <span>Subtotal</span>
-                <span>₹{subtotal.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex justify-between text-sm text-steel-600">
-                <span>GST (18%)</span>
-                <span>₹{gst.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex justify-between text-base font-bold text-steel-900 border-t border-gray-200 pt-2 mt-2">
-                <span>Total</span>
-                <span className="text-amber-600">₹{total.toLocaleString('en-IN')}</span>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="p-2 text-slate-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 transition-colors"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
               </div>
             </div>
+          ))}
 
+          <div className="flex justify-between items-center pt-2">
             <button
-              onClick={handleCheckout}
-              disabled={saving}
-              className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-steel-900 font-bold py-3 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/30 flex items-center justify-center gap-2"
+              onClick={() => onNavigate?.('products')}
+              className="text-sm font-bold text-amber-600 hover:text-amber-700 transition-colors"
             >
-              {saving ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  Saving order...
-                </>
-              ) : (
-                <>Pay with Razorpay — ₹{total.toLocaleString('en-IN')}</>
-              )}
+              ← Add more structures
             </button>
-
-            <p className="text-xs text-center text-steel-400 mt-2.5 leading-snug">
-              After payment, our team will contact you at{' '}
-              <span className="font-semibold">+91 73863 81729</span> to finalize measurements &amp; schedule delivery.
-            </p>
+            <button
+              onClick={clearCart}
+              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-wider"
+            >
+              Clear Estimate
+            </button>
           </div>
-        )}
+        </div>
+
+        {/* Pricing Summary Sidebar Breakdown Card */}
+        <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl h-fit border border-slate-800">
+          <h3 className="text-xl font-bold mb-4 tracking-tight">Estimate Summary</h3>
+          
+          <div className="space-y-3 pb-4 border-b border-slate-800 text-sm text-slate-400">
+            <div className="flex justify-between">
+              <span>Total Items Selected</span>
+              <span className="text-white font-semibold">{cartItems.reduce((acc, i) => acc + i.quantity, 0)} items</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Site Consultation</span>
+              <span className="text-emerald-400 font-medium uppercase text-xs tracking-wider">Free</span>
+            </div>
+          </div>
+
+          <div className="pt-4 mb-6">
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm text-slate-400">Grand Total Estimate</span>
+              <span className="text-3xl font-black text-amber-400">
+                ₹{getCartTotal().toLocaleString('en-IN')}
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowCheckoutModal(true)}
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white text-center font-extrabold py-4 px-4 rounded-xl transition-all shadow-lg shadow-amber-500/20 uppercase tracking-wider text-xs flex items-center justify-center gap-2"
+          >
+            Proceed to Checkout
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
+
+      {/* CUSTOMER INFORMATION MODAL DIALOG */}
+      {showCheckoutModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden animate-scaleIn border border-slate-100">
+            <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
+              <div>
+                <h3 className="text-lg font-bold">Contact & Site Details</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Please fill out your deployment details before payment processing</p>
+              </div>
+              <button 
+                onClick={() => setShowCheckoutModal(false)}
+                className="text-slate-400 hover:text-white font-bold text-lg p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleFinalCheckoutSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-amber-500" /> Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={customerInfo.name}
+                  onChange={handleInputChange}
+                  placeholder="John Doe"
+                  className={`w-full rounded-xl border p-3 text-sm focus:outline-hidden focus:ring-2 ${formErrors.name ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:ring-amber-200 focus:border-amber-500'}`}
+                />
+                {formErrors.name && <p className="text-rose-500 text-xs mt-1 font-medium">{formErrors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <Phone className="w-3.5 h-3.5 text-amber-500" /> Mobile Number
+                </label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={customerInfo.phone}
+                  onChange={handleInputChange}
+                  placeholder="9876543210"
+                  className={`w-full rounded-xl border p-3 text-sm focus:outline-hidden focus:ring-2 ${formErrors.phone ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:ring-amber-200 focus:border-amber-500'}`}
+                />
+                {formErrors.phone && <p className="text-rose-500 text-xs mt-1 font-medium">{formErrors.phone}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-amber-500" /> Complete Delivery/Installation Address
+                </label>
+                <textarea
+                  name="address"
+                  rows={3}
+                  value={customerInfo.address}
+                  onChange={handleInputChange}
+                  placeholder="Plot no, Street name, City area, Hyderabad..."
+                  className={`w-full rounded-xl border p-3 text-sm focus:outline-hidden focus:ring-2 ${formErrors.address ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:ring-amber-200 focus:border-amber-500'}`}
+                />
+                {formErrors.address && <p className="text-rose-500 text-xs mt-1 font-medium">{formErrors.address}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  Special Work Specifications / Notes (Optional)
+                </label>
+                <textarea
+                  name="notes"
+                  rows={2}
+                  value={customerInfo.notes}
+                  onChange={handleInputChange}
+                  placeholder="Any particular iron gauge spacing or design layout preference..."
+                  className="w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
+                <div className="flex justify-between items-center mb-2 px-1">
+                  <span className="text-sm font-bold text-slate-700">Amount Due:</span>
+                  <span className="text-xl font-black text-slate-900">₹{getCartTotal().toLocaleString('en-IN')}</span>
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-slate-900 hover:bg-amber-500 text-white font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs transition-colors shadow-md flex items-center justify-center gap-2"
+                >
+                  Confirm & Route to Checkout Gateway
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
