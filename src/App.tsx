@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import Hero from './components/Hero';
-import Categories from './components/Categories';
 import Products from './components/Products';
 import Estimator from './components/Estimator';
 import Cart from './components/Cart';
@@ -63,7 +62,7 @@ export default function App() {
         return (
           <>
             <Hero onNavigate={handleNavigate} />
-            <Categories onNavigate={handleNavigate} />
+            <Products onAddToCart={addToCart} onNavigate={handleNavigate} />
           </>
         );
       case 'products':
