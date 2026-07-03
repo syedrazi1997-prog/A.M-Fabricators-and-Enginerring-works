@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../hooks/useCart';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, User, Phone, MapPin } from 'lucide-react';
 
 interface CartProps {
