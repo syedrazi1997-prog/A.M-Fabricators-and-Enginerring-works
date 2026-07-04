@@ -74,9 +74,9 @@ export default function Contact() {
               {
                 icon: Mail,
                 title: 'Email Us',
-                lines: ['amfabricators@gmail.com'],
+                lines: ['amfabricators3@gmail.com'],
                 sub: 'We reply within 24 hours',
-                action: { label: 'Send Email', href: 'mailto:amfabricators@gmail.com' },
+                action: { label: 'Send Email', href: 'mailto:amfabricators3@gmail.com' },
               },
               {
                 icon: Clock,
