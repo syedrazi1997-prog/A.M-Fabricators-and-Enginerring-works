@@ -134,7 +134,7 @@ export default function Cart({ items, onClose, onRemove, onUpdateQty, onOrderSuc
     if (items.length === 0) return;
 
     const options: RazorpayOptions = {
-      key: 'rzp_test_YOUR_KEY_HERE',
+      key: 'rzp_live_T8gb3CmRe1eNyx',
       amount: total * 100,
       currency: 'INR',
       name: 'A.M Fabricators Engineering Works',
