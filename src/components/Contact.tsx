@@ -1,36 +1,59 @@
 import { useState } from 'react';
 import { Phone, MapPin, Mail, Clock, ExternalLink, Send, Loader2, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!form.name.trim() || !form.message.trim()) {
       setError('Name and message are required.');
       return;
     }
+
     setError('');
     setSubmitting(true);
 
-    const { error: dbError } = await supabase.from('contact_messages').insert({
-      name: form.name.trim(),
-      email: form.email.trim() || null,
-      phone: form.phone.trim() || null,
-      subject: form.subject.trim() || null,
-      message: form.message.trim(),
-    });
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          access_key: "17377fb6-0966-46f2-bbb1-cb94ff71c1a4",
+          name: form.name.trim(),
+          email: form.email.trim() || "Not Provided",
+          phone: form.phone.trim() || "Not Provided",
+          subject: form.subject.trim() || "New Contact Form Submission",
+          message: form.message.trim(),
+        })
+      });
 
-    setSubmitting(false);
-    if (dbError) {
-      setError('Failed to send message. Please call us directly at +91 73863 81729.');
-    } else {
-      setSubmitted(true);
-      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      const data = await response.json();
+
+      setSubmitting(false);
+
+      if (data.success) {
+        setSubmitted(true);
+        setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        setError(data.message || 'Failed to send message. Please call us directly at +91 73863 81729.');
+      }
+    } catch (err) {
+      setSubmitting(false);
+      setError('Something went wrong. Please call us directly at +91 73863 81729.');
     }
   };
 
@@ -85,10 +108,7 @@ export default function Contact() {
                 sub: 'Emergency orders: call +91 73863 81729',
               },
             ].map((card) => (
-              <div
-                key={card.title}
-                className="bg-steel-800 border border-steel-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors"
-              >
+              <div key={card.title} className="bg-steel-800 border border-steel-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                     <card.icon size={18} className="text-amber-400" />
@@ -146,7 +166,6 @@ export default function Contact() {
             {/* Contact form */}
             <div className="bg-steel-800 border border-steel-700 rounded-2xl p-6">
               <h3 className="font-display text-xl font-bold text-white mb-5">Send Us a Message</h3>
-
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <CheckCircle size={48} className="text-green-400 mb-4" />
@@ -188,7 +207,6 @@ export default function Contact() {
                       />
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">Email</label>
                     <input
@@ -199,7 +217,6 @@ export default function Contact() {
                       className="w-full bg-steel-700 border border-steel-600 text-white placeholder-steel-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
                     />
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">Subject</label>
                     <input
@@ -210,7 +227,6 @@ export default function Contact() {
                       className="w-full bg-steel-700 border border-steel-600 text-white placeholder-steel-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
                     />
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-steel-300 mb-1.5">
                       Message <span className="text-red-400">*</span>
@@ -224,9 +240,7 @@ export default function Contact() {
                     />
                   </div>
 
-                  {error && (
-                    <p className="text-red-400 text-xs">{error}</p>
-                  )}
+                  {error && <p className="text-red-400 text-xs">{error}</p>}
 
                   <button
                     type="submit"
@@ -235,13 +249,11 @@ export default function Contact() {
                   >
                     {submitting ? (
                       <>
-                        <Loader2 size={16} className="animate-spin" />
-                        Sending...
+                        <Loader2 size={16} className="animate-spin" /> Sending...
                       </>
                     ) : (
                       <>
-                        <Send size={16} />
-                        Send Message
+                        <Send size={16} /> Send Message
                       </>
                     )}
                   </button>
